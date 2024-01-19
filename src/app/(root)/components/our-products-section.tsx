@@ -4,6 +4,7 @@ import {
   Button,
   Flex,
   Heading,
+  Hide,
   Stack,
   Text,
   VStack,
@@ -21,13 +22,20 @@ export default function OurProductsSection() {
       py={"50px"}
       gap={"36px"}
       w={"100%"}
-      px={"100px"}
+      px={{ lg: "20px", xl: "100px" }}
     >
-      <VStack gap={"20px"}>
-        <Heading fontSize={"6xl"} fontWeight={"500"}>
+      <VStack
+        gap={"20px"}
+        px={"20px"}
+        align={{ base: "flex-start", md: "center" }}
+      >
+        <Heading
+          size={{ base: "2xl", md: "3xl", lg: "4xl" }}
+          fontWeight={"500"}
+        >
           Our Products
         </Heading>
-        <Text fontSize={"20px"} maxW={"973px"}>
+        <Text fontSize={{ base: "16px", md: "20px" }} maxW={"973px"}>
           {
             "We facilitate payment and transfer options across widely used Blockchain Networks. (Ethereum, Polygon, BNB Chain, Arbitrum, Optimismm Algorand and soon Bitcoin and Bitcoin L2s)"
           }
@@ -44,32 +52,43 @@ export default function OurProductsSection() {
       </VStack>
       <Box
         w={"100%"}
-        pt={"72px"}
-        px={"72px"}
-        borderRadius={"12px"}
+        pt={{ base: "24px", lg: "72px" }}
+        paddingX={{ base: "24px", lg: "72px" }}
+        borderRadius={{ base: "0px", md: "12px" }}
         bgGradient={
           "linear-gradient(90deg, rgba(145, 181, 253, 0.11) -0.08%, rgba(145, 183, 253, 0.53) 49.95%, #96BAFE 99.98%)"
         }
       >
         <Flex
-          justify={"space-evenly"}
-          py={"85px"}
+          justify={"center"}
+          align={"center"}
+          py={{ base: "42px", md: "85px" }}
+          gap={{ base: "24px", lg: "84px" }}
           bg={"white"}
-          borderRadius={"12px"}
+          borderTopRadius={"12px"}
+          px={"20px"}
+          flexDirection={{ base: "column", md: "row" }}
         >
-          <Image
-            src={Ipad.src}
-            alt="payment link iPad"
-            width={517}
-            height={373}
-          />
-          <Flex flexDirection={"column"} align={"flex-start"} gap={"24px"}>
+          <Flex order={{ base: "2", md: "1" }}>
+            <Image
+              src={Ipad.src}
+              alt="payment link iPad"
+              width={517}
+              height={373}
+            />
+          </Flex>
+          <Flex
+            flexDirection={"column"}
+            align={{ base: "center", md: "flex-start" }}
+            gap={"24px"}
+            order={{ base: "1", md: "2" }}
+          >
             <Image src={PaymentLink.src} alt="my-gif" width={110} height={80} />
-            <Stack gap={"16px"} align={"flex-start"}>
+            <Stack gap={"16px"} align={{ base: "center", md: "flex-start" }}>
               <Text fontSize={"24px"} fontWeight={"500"}>
                 Payment Link
               </Text>
-              <Text maxW={"279px"}>
+              <Text maxW={{ base: "90%", md: "279px" }}>
                 For enterprises selling via social platforms or without an
                 existing online store, design personalized links for specific
                 products and amounts. You have the flexibility to create one or

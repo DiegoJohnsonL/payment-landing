@@ -1,16 +1,17 @@
+"use client"
+
 import useGetPartners from "@/hooks/cms-api/use-get-partners";
-import {
-  Box,
-  Flex,
-  SimpleGrid,
-  Skeleton,
-  Spinner,
-  Text,
-  VStack,
-} from "@chakra-ui/react";
+import useResponsive from "@/hooks/use-responsive";
+import { Box, Flex, Spinner, Stack, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Grid, Pagination, Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/grid";
+import "swiper/css/pagination";
 
 export default function PartnersSection() {
+  const { isMobile, isTablet } = useResponsive();
   const { data: partners, isLoading } = useGetPartners();
   return (
     <Flex
@@ -30,32 +31,51 @@ export default function PartnersSection() {
             size="lg"
           />
         )}
-        <SimpleGrid
-          minChildWidth={"200px"}
-          spacing={"16px"}
-          w={"100%"}
-          maxW={"880px"}
+        <Swiper
+          loopAddBlankSlides={true}
+          autoplay={{
+            delay: 2500,
+            disableOnInteraction: false,
+          }}
+          slidesPerView={isMobile ? 2 : isTablet ? 3 : 4}
+          spaceBetween={"20px"}
+          grid={{
+            rows: isMobile ? 1 : 2,
+            fill: "row",
+          }}
+          modules={[Grid, Pagination, Autoplay, Navigation]}
+          style={{
+            width: "100%",
+            height: "100%",
+          }}
         >
-          {partners?.slice(0, 8).map((partner) => (
-            <Box
-              key={partner.name}
-              cursor={partner.link ? "pointer" : "default"}
-              onClick={() => {
-                if (partner.link) {
-                  window.open(partner.link, "_blank");
-                }
-              }}
-              mx={"auto"}
-            >
-              <Image
-                src={partner.image}
-                alt={`${partner.name} logo`}
-                width={200}
-                height={60}
-              />
-            </Box>
-          ))}
-        </SimpleGrid>
+          {partners?.map((partner, index) => (
+              <SwiperSlide
+                key={partner.slug + "-" + index}
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Box
+                  cursor={partner.link ? "pointer" : "default"}
+                  onClick={() => {
+                    if (partner.link) {
+                      window.open(partner.link, "_blank");
+                    }
+                  }}
+                >
+                  <Image
+                    src={partner.image}
+                    alt={`${partner.name} logo`}
+                    width={200}
+                    height={60}
+                  />
+                </Box>
+              </SwiperSlide>
+            ))}
+        </Swiper>
 
         <Box
           w={"100%"}

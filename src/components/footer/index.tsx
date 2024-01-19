@@ -29,7 +29,7 @@ export default function Footer() {
     <footer>
       <Stack
         id="unique-footer"
-        paddingX={{ base: "20px", lg: "48px", xl: "108px" }}
+        paddingX={{ base: "20px", md: "48px", lg: "108px" }}
         paddingTop="48px"
         mb="52px"
       >

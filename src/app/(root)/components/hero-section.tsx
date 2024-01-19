@@ -1,6 +1,14 @@
 "use client";
 
-import { Box, Button, Flex, Grid, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  Heading,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import heroGif from "../assets/hero-animation.gif";
 import HeroBackground from "../assets/hero-background.png";
 import Image from "next/image";
@@ -8,7 +16,7 @@ import { Link } from "@chakra-ui/next-js";
 
 export default function HeroSection() {
   return (
-    <Box px={"22px"} w={"100%"}>
+    <Box px={{ base: "0px", md: "20px" }} w={"100%"}>
       <Flex
         backgroundImage={`url(${HeroBackground.src})`}
         backgroundPosition={"bottom"}
@@ -40,20 +48,17 @@ export default function HeroSection() {
         <VStack
           gap={"24px"}
           textAlign={"center"}
-          pt={"96px"}
+          pt={{ base: "80px", md: "96px" }}
           w={"100%"}
+          px={{ base: "20px", md: " 0px" }}
           zIndex={"10"}
         >
-          <Text
-            fontSize={{ base: "30px", md: "52px", lg: "80px" }}
-            fontWeight={"500"}
-            maxW={"686px"}
-          >
+          <Heading size={{base: "2xl", md: "3xl", lg: "4xl"}} fontWeight={"500"} maxW={"686px"}>
             Cryptoasset-based <br />
-            <Text as="span" color={"#999"}>
+            <span style={{color: "#999"}}>
               Payment System
-            </Text>
-          </Text>
+            </span>
+          </Heading>
           <Text maxW={"468px"}>
             Facilitate payments and fund transfers via cryptocurrencies on any
             of your sales platforms.

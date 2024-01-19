@@ -15,7 +15,7 @@ export default function Navbar() {
         <Flex
           w={"100%"}
           justify={"space-between"}
-          paddingX={{ base: "20px", lg: "48px", xl: "108px" }}
+          paddingX={{ base: "20px", md: "48px", lg: "108px" }}
           py={{ base: "24px", md: "32px" }}
           align={"center"}
         >

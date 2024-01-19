@@ -1,7 +1,6 @@
 "use client"
 
 import useGetPartners from "@/hooks/cms-api/use-get-partners";
-import useResponsive from "@/hooks/use-responsive";
 import { Box, Flex, Spinner, Stack, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -9,6 +8,7 @@ import { Autoplay, Grid, Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/grid";
 import "swiper/css/pagination";
+import useResponsive from "@/hooks/use-responsive";
 
 export default function PartnersSection() {
   const { isMobile, isTablet } = useResponsive();

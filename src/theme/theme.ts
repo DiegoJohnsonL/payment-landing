@@ -1,6 +1,7 @@
 import { StyleFunctionProps, extendTheme, type ThemeConfig } from '@chakra-ui/react'
 import { colors } from './colors';
 import { buttonTheme } from './button';
+import { headingTheme } from './heading';
 
 
 export const theme = extendTheme({
@@ -21,5 +22,6 @@ export const theme = extendTheme({
   colors: colors,
   components: {
     Button: buttonTheme,
+    Heading: headingTheme
   },
 });

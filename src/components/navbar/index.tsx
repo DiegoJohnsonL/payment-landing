@@ -30,6 +30,7 @@ export default function Navbar() {
           </Link>
           <IconButton
             aria-label="Open Menu"
+            colorScheme="gray"
             icon={<HamburgerIcon />}
             display={{ md: "none" }}
           />

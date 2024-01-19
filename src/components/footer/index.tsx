@@ -1,7 +1,17 @@
-'use client'
+"use client";
 
 import { domainsConfig } from "@/config";
-import { Box, Button, Flex, Grid, Heading, List, ListItem, Stack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Grid,
+  Heading,
+  List,
+  ListItem,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
 import { __ } from "@/locale/utils";
 import Logo from "./assets/footer-logo.svg";
 import Facebook from "./assets/facebook.svg";
@@ -11,7 +21,7 @@ import Twitter from "./assets/twitter.svg";
 import Youtube from "./assets/youtube.svg";
 import Linkedin from "./assets/linkedin.svg";
 import { useRouter } from "next/navigation";
-import { Link } from '@chakra-ui/next-js'
+import { Link } from "@chakra-ui/next-js";
 
 export default function Footer() {
   const router = useRouter();
@@ -131,8 +141,7 @@ export default function Footer() {
       </Stack>
     </footer>
   );
-} 
-
+}
 
 interface FooterLinkItem {
   text: string;
@@ -145,7 +154,6 @@ interface FooterLinkCategory {
   items: FooterLinkItem[];
 }
 
-
 function useFooterLinks(): FooterLinkCategory[] {
   function getUrlPage(page: string) {
     return `${domainsConfig.urlMeteor}/${page}`;
@@ -155,41 +163,44 @@ function useFooterLinks(): FooterLinkCategory[] {
     {
       name: "More about METEOR",
       items: [
-        { text: "blog", link: getUrlPage("/blogs") },
-        { text: "events", link: getUrlPage("/events") },
+        { text: "Blog", link: getUrlPage("/blogs") },
+        { text: "Events", link: getUrlPage("/events") },
         {
-          text: "whitepaper",
+          text: "Whitepaper",
           link: getUrlPage(`/files/TheMeteor_Whitepaper_202312_01.pdf`),
           target: "_blank",
         },
-        { text: "terms_and_conditions", link: getUrlPage(`/terms-condition`) },
-        { text: "privacy_policy", link: getUrlPage(`/policy`) },
-        { text: "disclosure", link: getUrlPage(`/legal/disclosure`) },
+        { text: "Terms and conditions", link: getUrlPage(`/terms-condition`) },
+        { text: "Privacy policy", link: getUrlPage(`/policy`) },
+        { text: "Disclosure", link: getUrlPage(`/legal/disclosure`) },
         // { text: "Contact us", link: "/contact-us" }
       ],
     },
     {
       name: "Products",
       items: [
-        { text: "exchange", link: getUrlPage(`/spot/BTC-USDT?type=spot`) },
-        { text: "nft", link: `/` },
+        { text: "Exchange", link: getUrlPage(`/spot/BTC-USDT?type=spot`) },
+        { text: "Nft", link: `/` },
         { text: "Launchpad", link: getUrlPage(`/launchpad`) },
-        { text: "cryptocurrencies", link: getUrlPage(`/market-overview`) },
+        { text: "Cryptocurrencies", link: getUrlPage(`/market-overview`) },
       ],
     },
     {
       name: "Services",
       items: [
-        { text: "Affiliate Program", link: getUrlPage(`/affiliate/affiliate-program`) },
+        {
+          text: "Affiliate Program",
+          link: getUrlPage(`/affiliate/affiliate-program`),
+        },
         { text: "Fees Information", link: getUrlPage(`/fees`) },
-        { text: "wallet", link: getUrlPage(`/wallet/overview`) },
+        { text: "Wallet", link: getUrlPage(`/wallet/overview`) },
       ],
     },
     {
       name: "Support",
       items: [
-        { text: "help_center", link: getUrlPage(`/help`) },
-        { text: "profile", link: getUrlPage(`/profile`) },
+        { text: "Help center", link: getUrlPage(`/help`) },
+        { text: "Profile", link: getUrlPage(`/profile`) },
       ],
     },
   ];

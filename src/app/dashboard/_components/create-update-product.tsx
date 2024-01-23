@@ -25,7 +25,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldValues, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const createProductSchema = z.object({
@@ -56,7 +56,7 @@ export default function CreateUpdateProduct({
   const { mutate: createProduct } = useCreateProduct();
   const { mutate: updateProduct } = useUpdateProduct();
   const toast = useToast();
-
+ ;
   const {
     register,
     handleSubmit,

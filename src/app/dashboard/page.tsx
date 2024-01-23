@@ -74,13 +74,6 @@ export default function Dashboard() {
 
   const [selectedItemId, setSelectedItemId] = useState(sideMenuItems[0].id);
   const toast = useToast();
-  if (isFetching) {
-    return (
-      <Center flex={1}>
-        <Spinner />
-      </Center>
-    );
-  }
 
   return (
     <Flex
@@ -149,127 +142,132 @@ export default function Dashboard() {
           previousPage={() => fetchPreviousPage()}
           setPageSize={setPageSize}
         />
-        <TableContainer w={"100%"}>
-          <Table variant="unstyled">
-            <Thead bgColor={"#F5F8FE"}>
-              <Tr>
-                <Th
-                  fontWeight={"400"}
-                  textTransform={"capitalize"}
-                  fontSize={"14px"}
-                  textColor={"#4D4D4D"}
-                >
-                  Product
-                </Th>
-                <Th
-                  fontWeight={"400"}
-                  textTransform={"capitalize"}
-                  fontSize={"14px"}
-                  textColor={"#4D4D4D"}
-                >
-                  Price
-                </Th>
-                <Th
-                  fontWeight={"400"}
-                  textTransform={"capitalize"}
-                  fontSize={"14px"}
-                  textColor={"#4D4D4D"}
-                >
-                  Link
-                </Th>
-                <Th
-                  fontWeight={"400"}
-                  textTransform={"capitalize"}
-                  fontSize={"14px"}
-                  textColor={"#4D4D4D"}
-                >
-                  Status
-                </Th>
-                <Th
-                  fontWeight={"400"}
-                  textTransform={"capitalize"}
-                  fontSize={"14px"}
-                  textColor={"#4D4D4D"}
-                >
-                  Action
-                </Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {products.map((product, index) => (
-                <Tr key={product.id + "-" + index}>
-                  <Td color={"#4D4D4D"} fontSize={"12px"}>
-                    {product.name}
-                  </Td>
-                  <Td color={"#4D4D4D"} fontSize={"12px"}>
-                    {product.price}
-                  </Td>
-                  <Td color={"#4D4D4D"} fontSize={"12px"}>
-                    <HStack>
-                      <Link href={product.payLink} target="_blank">
-                        {product.payLink}
-                      </Link>
-                      <IconButton
-                        aria-label="Copy link"
-                        variant={"ghost"}
-                        onClick={() => {
-                          setValue(product.payLink);
-                          onCopy();
-                          hasCopied &&
+        {isFetching ? (
+          <Center  w={"100%"} h={"50vh"}>
+            <Spinner />
+          </Center>
+        ) : (
+          <TableContainer w={"100%"}>
+            <Table variant="unstyled">
+              <Thead bgColor={"#F5F8FE"}>
+                <Tr>
+                  <Th
+                    fontWeight={"400"}
+                    textTransform={"capitalize"}
+                    fontSize={"14px"}
+                    textColor={"#4D4D4D"}
+                  >
+                    Product
+                  </Th>
+                  <Th
+                    fontWeight={"400"}
+                    textTransform={"capitalize"}
+                    fontSize={"14px"}
+                    textColor={"#4D4D4D"}
+                  >
+                    Price
+                  </Th>
+                  <Th
+                    fontWeight={"400"}
+                    textTransform={"capitalize"}
+                    fontSize={"14px"}
+                    textColor={"#4D4D4D"}
+                  >
+                    Link
+                  </Th>
+                  <Th
+                    fontWeight={"400"}
+                    textTransform={"capitalize"}
+                    fontSize={"14px"}
+                    textColor={"#4D4D4D"}
+                  >
+                    Status
+                  </Th>
+                  <Th
+                    fontWeight={"400"}
+                    textTransform={"capitalize"}
+                    fontSize={"14px"}
+                    textColor={"#4D4D4D"}
+                  >
+                    Action
+                  </Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {products.map((product, index) => (
+                  <Tr key={product.id + "-" + index}>
+                    <Td color={"#4D4D4D"} fontSize={"12px"}>
+                      {product.name}
+                    </Td>
+                    <Td color={"#4D4D4D"} fontSize={"12px"}>
+                      {product.price}
+                    </Td>
+                    <Td color={"#4D4D4D"} fontSize={"12px"}>
+                      <HStack>
+                        <Link href={product.payLink} target="_blank">
+                          {product.payLink}
+                        </Link>
+                        <IconButton
+                          aria-label="Copy link"
+                          variant={"ghost"}
+                          onClick={() => {
+                            setValue(product.payLink);
+                            onCopy();
                             toast({
                               title: `Link copied`,
                               status: "success",
                               isClosable: true,
                             });
-                        }}
-                        w={"fit-content"}
-                        icon={<CopyIcon />}
-                        boxSize={"16px"}
-                        color={"primary.500"}
-                        cursor={"pointer"}
-                      />
-                    </HStack>
-                  </Td>
-                  <Td>
-                    <HStack>
-                      <Circle
-                        size={"12px"}
-                        bgColor={
-                          product.status === ProductStatus.Active
-                            ? "#6BC77C"
-                            : "#F15042"
-                        }
-                      />
-                      <Text
-                        color={"#4D4D4D"}
-                        fontSize={"14px"}
-                        textTransform={"capitalize"}
-                      >
-                        {product.status}
-                      </Text>
-                    </HStack>
-                  </Td>
-                  <Td>
-                    <Flex gap={"24px"}>
-                      <Icon
-                        boxSize={"16px"}
-                        as={FaPen}
-                        color={"primary.500"}
-                        cursor={"pointer"}
-                      />
-                      <Icon
-                        boxSize={"16px"}
-                        as={RiDeleteBin6Fill}
-                        color={"primary.500"}
-                        cursor={"pointer"}
-                      />
-                    </Flex>
-                  </Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </Table>
-        </TableContainer>
+                          }}
+                          w={"fit-content"}
+                          icon={<CopyIcon />}
+                          boxSize={"16px"}
+                          color={"primary.500"}
+                          cursor={"pointer"}
+                        />
+                      </HStack>
+                    </Td>
+                    <Td>
+                      <HStack>
+                        <Circle
+                          size={"12px"}
+                          bgColor={
+                            product.status === ProductStatus.Active
+                              ? "#6BC77C"
+                              : "#F15042"
+                          }
+                        />
+                        <Text
+                          color={"#4D4D4D"}
+                          fontSize={"14px"}
+                          textTransform={"capitalize"}
+                        >
+                          {product.status}
+                        </Text>
+                      </HStack>
+                    </Td>
+                    <Td>
+                      <Flex gap={"24px"}>
+                        <Icon
+                          boxSize={"16px"}
+                          as={FaPen}
+                          color={"primary.500"}
+                          cursor={"pointer"}
+                        />
+                        <Icon
+                          boxSize={"16px"}
+                          as={RiDeleteBin6Fill}
+                          color={"primary.500"}
+                          cursor={"pointer"}
+                        />
+                      </Flex>
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </TableContainer>
+        )}
       </VStack>
     </Flex>
   );

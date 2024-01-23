@@ -6,3 +6,7 @@ export const domainsConfig = {
 export const cmsConfig = {
   cmsApiUrl: process.env.NEXT_PUBLIC_CMS_BACKEND_BASE_URL || "https://cms.themeteor.io",
 }
+
+export const RQueryKeys = {
+  products: 'products',
+}

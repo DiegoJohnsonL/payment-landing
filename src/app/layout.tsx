@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import {  Providers } from './(root)/providers'
+import {  Providers } from './providers'
 import { Flex } from '@chakra-ui/react';
-import { geomanist } from '@/fonts';
+import { geomanist } from '@/styles/fonts';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import "@/styles/globals.css";

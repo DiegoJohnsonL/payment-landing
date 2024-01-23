@@ -12,19 +12,20 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { __ } from "@/locale/utils";
-import Logo from "./assets/footer-logo.svg";
-import Facebook from "./assets/facebook.svg";
-import Insta from "./assets/instagram.svg";
-import Tiktok from "./assets/tiktok.svg";
-import Twitter from "./assets/twitter.svg";
-import Youtube from "./assets/youtube.svg";
-import Linkedin from "./assets/linkedin.svg";
+import Logo from "@/assets/footer/footer-logo.svg";
+import Facebook from "@/assets/footer/facebook.svg";
+import Insta from "@/assets/footer/instagram.svg";
+import Tiktok from "@/assets/footer/tiktok.svg";
+import Twitter from "@/assets/footer/twitter.svg";
+import Youtube from "@/assets/footer/youtube.svg";
+import Linkedin from "@/assets/footer/linkedin.svg";
 import { useRouter } from "next/navigation";
 import { Link } from "@chakra-ui/next-js";
+import { useTranslate } from "@/hooks/utils/use-translate";
 
 export default function Footer() {
   const router = useRouter();
+  const { __ } = useTranslate();
   return (
     <footer>
       <Stack

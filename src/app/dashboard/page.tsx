@@ -1,14 +1,18 @@
 "use client";
 
-import useGetProducts from "@/hooks/api/use-get-products";
+import useGetProducts from "@/hooks/api/products/use-get-products";
 import {
   Button,
   Center,
+  Circle,
   Flex,
   HStack,
   Heading,
   Icon,
+  IconButton,
   Input,
+  InputGroup,
+  InputLeftElement,
   List,
   ListItem,
   Spinner,
@@ -23,11 +27,13 @@ import {
   Thead,
   Tr,
   VStack,
+  useClipboard,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { ISidenavItem } from "@/types/sidenav-item";
-import SidenavItem from "./components/sidenav-item";
+import SidenavItem from "./_components/sidenav-item";
 import { LuStore } from "react-icons/lu";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { BiMoneyWithdraw } from "react-icons/bi";
@@ -35,18 +41,25 @@ import { RiDeleteBin6Fill } from "react-icons/ri";
 import { IoSettingsOutline } from "react-icons/io5";
 import { FaPen } from "react-icons/fa";
 import { TbLogout2 } from "react-icons/tb";
-import ProductBagImage from "./assets/products-bag.svg?url";
+import ProductBagImage from "@/assets/dashboard/products-bag.svg?url";
 import Image from "next/image";
-import CreateProduct from "./components/create-product";
+import CreateUpdateProduct from "./_components/create-update-product";
+import IProduct, { ProductStatus } from "@/types/product";
+import TablePagination from "@/components/table-pagination";
+import { CopyIcon, Search2Icon } from "@chakra-ui/icons";
+import { Link } from "@chakra-ui/next-js";
 
 export default function Dashboard() {
-  const createProductDisclosure = useDisclosure()
-  const { data, hasNextPage, isFetching, fetchNextPage } = useGetProducts({
-    page: 0,
-    pageSize: 10,
-  });
+  const { onCopy, setValue, hasCopied } = useClipboard("");
+  const createProductDisclosure = useDisclosure();
+  const [pageSize, setPageSize] = useState(20);
+  const { data, hasNextPage, isFetching, fetchNextPage, fetchPreviousPage } =
+    useGetProducts({
+      page: 0,
+      pageSize: pageSize,
+    });
   const products = data ? data.pages.flatMap((page) => page.data) : [];
-
+  const [updatingProduct, setUpdatingProduct] = useState<IProduct>();
   const sideMenuItems: ISidenavItem[] = [
     { id: "products", icon: LuStore, label: "Products" },
     {
@@ -60,7 +73,7 @@ export default function Dashboard() {
   ];
 
   const [selectedItemId, setSelectedItemId] = useState(sideMenuItems[0].id);
-
+  const toast = useToast();
   if (isFetching) {
     return (
       <Center flex={1}>
@@ -78,9 +91,13 @@ export default function Dashboard() {
       px={"20px"}
       gap={"24px"}
     >
-      <CreateProduct isOpen={createProductDisclosure.isOpen} onClose={() => {
-        createProductDisclosure.onClose();
-      }}/>
+      <CreateUpdateProduct
+        isOpen={createProductDisclosure.isOpen}
+        onClose={() => {
+          createProductDisclosure.onClose();
+        }}
+        product={updatingProduct}
+      />
       <VStack maxW={"286px"} w={"100%"} shadow={"md"} gap={0}>
         {sideMenuItems.map((item) => (
           <SidenavItem key={item.id} item={item} selectedId={selectedItemId} />
@@ -108,12 +125,30 @@ export default function Dashboard() {
         </HStack>
 
         <HStack w={"100%"} justify={"space-between"} gap={"24px"}>
-          <Input size={"lg"} maxW={"424px"} fontSize={"14px"} />
-          <Button fontSize={"14px"} size={"lg"} px={"43px"} onClick={createProductDisclosure.onOpen}>
+          <InputGroup size={"lg"} maxW={"424px"}>
+            <InputLeftElement pointerEvents="none">
+              <Search2Icon color="primary.900" boxSize={"16px"} />
+            </InputLeftElement>
+            <Input fontSize={"14px"} placeholder="Search" />
+          </InputGroup>
+
+          <Button
+            fontSize={"14px"}
+            size={"lg"}
+            px={"43px"}
+            onClick={createProductDisclosure.onOpen}
+          >
             Add product
           </Button>
         </HStack>
-
+        <TablePagination
+          total={100}
+          page={2}
+          pageSize={pageSize}
+          nextPage={() => fetchNextPage()}
+          previousPage={() => fetchPreviousPage()}
+          setPageSize={setPageSize}
+        />
         <TableContainer w={"100%"}>
           <Table variant="unstyled">
             <Thead bgColor={"#F5F8FE"}>
@@ -170,10 +205,49 @@ export default function Dashboard() {
                     {product.price}
                   </Td>
                   <Td color={"#4D4D4D"} fontSize={"12px"}>
-                    {product.payLink}
+                    <HStack>
+                      <Link href={product.payLink} target="_blank">
+                        {product.payLink}
+                      </Link>
+                      <IconButton
+                        aria-label="Copy link"
+                        variant={"ghost"}
+                        onClick={() => {
+                          setValue(product.payLink);
+                          onCopy();
+                          hasCopied &&
+                            toast({
+                              title: `Link copied`,
+                              status: "success",
+                              isClosable: true,
+                            });
+                        }}
+                        w={"fit-content"}
+                        icon={<CopyIcon />}
+                        boxSize={"16px"}
+                        color={"primary.500"}
+                        cursor={"pointer"}
+                      />
+                    </HStack>
                   </Td>
-                  <Td color={"#4D4D4D"} fontSize={"12px"}>
-                    {product.status}
+                  <Td>
+                    <HStack>
+                      <Circle
+                        size={"12px"}
+                        bgColor={
+                          product.status === ProductStatus.Active
+                            ? "#6BC77C"
+                            : "#F15042"
+                        }
+                      />
+                      <Text
+                        color={"#4D4D4D"}
+                        fontSize={"14px"}
+                        textTransform={"capitalize"}
+                      >
+                        {product.status}
+                      </Text>
+                    </HStack>
                   </Td>
                   <Td>
                     <Flex gap={"24px"}>

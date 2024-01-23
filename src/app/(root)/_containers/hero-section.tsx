@@ -9,8 +9,8 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import heroGif from "../assets/hero-animation.gif";
-import HeroBackground from "../assets/hero-background.png";
+import heroGif from "@/assets/root/hero-animation.gif";
+import HeroBackground from "@/assets/root/hero-background.png";
 import Image from "next/image";
 import { Link } from "@chakra-ui/next-js";
 

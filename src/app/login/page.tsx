@@ -11,21 +11,22 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import LoginLogo from "./assets/login-logo.svg";
+import LoginLogo from "@/assets/login/login-logo.svg";
 import Link from "next/link";
-import { useMultistepForm } from "@/hooks/use-multistep-form";
 import Logo from "@/components/logo";
 
 export default function Login() {
-  const { step } = useMultistepForm([]);
-
   return (
     <VStack pt={{ base: "80px", md: "96px" }} gap={"48px"} px={"20px"}>
       <Card maxW={"519px"}>
         <CardBody px={{ base: "20px", sm: "40px" }} py={"32px"}>
           <VStack w={"100%"} gap="0" textAlign={"center"}>
-            <Logo width={120} height={32} colorMode="light"/>
-            <Heading fontSize={{ base: "32px" }} lineHeight={"40px"} pt={"32px"}>
+            <Logo width={120} height={32} colorMode="light" />
+            <Heading
+              fontSize={{ base: "32px" }}
+              lineHeight={"40px"}
+              pt={"32px"}
+            >
               Welcome Back!
             </Heading>
             <Text pt={"12px"} fontSize={"14px"} lineHeight={"16px"}>
@@ -44,13 +45,7 @@ export default function Login() {
               >
                 <option value="PE">PE +51</option>
               </Select>
-              <Input
-                w={"60%"}
-                placeholder="923 456 078"
-                size={"lg"}
-                fontSize={"14px"}
-                px={"24px"}
-              />
+              <Input w={"60%"} placeholder="923 456 078" px={"24px"} />
             </HStack>
             <Link href={"/dashboard"}>
               <Button size={"lg"} fontSize={"14px"} px={"87px"}>

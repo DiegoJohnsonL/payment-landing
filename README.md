@@ -40,7 +40,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ### Update 1 - Monday 20/01/2024
 
-#### Version v0.0.5:
+#### Version v0.2.0:
 
 - Updated input components styles configuration to match design.
 - Added React Hook Form and Zod for forms, including functionality for creating products.

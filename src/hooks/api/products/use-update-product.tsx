@@ -31,8 +31,7 @@ export default function useUpdateProduct() {
   const client = useQueryClient();
   return useMutation({
     mutationFn: (product: IProduct) => updateProduct(product),
-    onSuccess: () => {
-      console.log("Product updated");
+    onSuccess: (data, variables) => {
       client.invalidateQueries({ queryKey: [RQueryKeys.products] });
     },
     onError: (error) => {

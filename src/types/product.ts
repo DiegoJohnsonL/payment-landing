@@ -2,7 +2,6 @@ export default interface IProduct {
   id: string;
   name: string;
   price: number;
-  payLink: string;
   status: ProductStatus;
 }
 

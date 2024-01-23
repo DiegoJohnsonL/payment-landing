@@ -14,7 +14,6 @@ function createProduct(newProduct: ICreateProduct): Promise<IProduct> {
         id: nextId,
         name: newProduct.name,
         price: newProduct.price,
-        payLink: "https://www.google.com",
         status: ProductStatus.Active,
       };
       fakeDatabase.push(productToAdd);

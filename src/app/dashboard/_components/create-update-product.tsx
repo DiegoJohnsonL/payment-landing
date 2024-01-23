@@ -25,6 +25,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -43,7 +44,7 @@ const updateProductSchema = z.object({
 type TCreateProductSchema = z.infer<typeof createProductSchema>;
 type TUpdateProductSchema = z.infer<typeof updateProductSchema>;
 
-export default function CreateUpdateProduct({
+export default function CreateUpdateProductDrawer({
   isOpen,
   onClose,
   product,
@@ -56,14 +57,21 @@ export default function CreateUpdateProduct({
   const { mutate: createProduct } = useCreateProduct();
   const { mutate: updateProduct } = useUpdateProduct();
   const toast = useToast();
- ;
+
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<TCreateProductSchema | TUpdateProductSchema>({
     resolver: zodResolver(createProductSchema),
   });
+
+  if (product) {
+    setValue("name", product.name);
+    setValue("price", product.price);
+    setValue("active", product.status === ProductStatus.Active);
+  }
 
   function onSubmit(values: TCreateProductSchema | TUpdateProductSchema) {
     if (product) {
@@ -76,7 +84,6 @@ export default function CreateUpdateProduct({
           status: updateValues.active
             ? ProductStatus.Active
             : ProductStatus.Inactive,
-          payLink: product.payLink,
         } as IProduct,
         {
           onSuccess: () => {
@@ -110,7 +117,7 @@ export default function CreateUpdateProduct({
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"sm"}>
-      <DrawerOverlay />
+      <DrawerOverlay backdropFilter="blur(10px)" />
       <DrawerContent>
         <DrawerBody p={"40px"}>
           <Stack w={"100%"} gap={"32px"}>
@@ -153,6 +160,16 @@ export default function CreateUpdateProduct({
                     </Flex>
                     <FormErrorMessage>{`${errors.price?.message}`}</FormErrorMessage>
                   </FormControl>
+                  {/* {product && (
+                    <FormControl isInvalid={!!errors.name}>
+                      <FormLabel htmlFor="active">Status</FormLabel>
+                      <Input
+                        {...register("active")}
+                        id="active"
+                      />
+                      <FormErrorMessage>{`${errors.name?.message}`}</FormErrorMessage>
+                    </FormControl>
+                  )} */}
                 </Stack>
 
                 <HStack w={"100%"} gap={"24px"} justify={"space-around"}>

@@ -31,27 +31,28 @@ import {
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ISidenavItem } from "@/types/sidenav-item";
 import SidenavItem from "./_components/sidenav-item";
 import { LuStore } from "react-icons/lu";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { BiMoneyWithdraw } from "react-icons/bi";
-import { RiDeleteBin6Fill } from "react-icons/ri";
 import { IoSettingsOutline } from "react-icons/io5";
-import { FaPen } from "react-icons/fa";
+import { FaPen, FaRegTrashAlt } from "react-icons/fa";
 import { TbLogout2 } from "react-icons/tb";
 import ProductBagImage from "@/assets/dashboard/products-bag.svg?url";
 import Image from "next/image";
-import CreateUpdateProduct from "./_components/create-update-product";
+import CreateUpdateProductDrawer from "./_components/create-update-product";
 import IProduct, { ProductStatus } from "@/types/product";
 import TablePagination from "@/components/table-pagination";
 import { CopyIcon, Search2Icon } from "@chakra-ui/icons";
 import { Link } from "@chakra-ui/next-js";
+import DeleteProductModal from "./_components/delete-product";
 
 export default function Dashboard() {
   const { onCopy, setValue, hasCopied } = useClipboard("");
   const createProductDisclosure = useDisclosure();
+  const deleteProductDisclosure = useDisclosure();
   const [pageSize, setPageSize] = useState(20);
   const { data, hasNextPage, isFetching, fetchNextPage, fetchPreviousPage } =
     useGetProducts({
@@ -59,7 +60,7 @@ export default function Dashboard() {
       pageSize: pageSize,
     });
   const products = data ? data.pages.flatMap((page) => page.data) : [];
-  const [updatingProduct, setUpdatingProduct] = useState<IProduct>();
+  const [selectedProduct, setSelectedProduct] = useState<IProduct>();
   const sideMenuItems: ISidenavItem[] = [
     { id: "products", icon: LuStore, label: "Products" },
     {
@@ -84,12 +85,21 @@ export default function Dashboard() {
       px={"20px"}
       gap={"24px"}
     >
-      <CreateUpdateProduct
+      <CreateUpdateProductDrawer
         isOpen={createProductDisclosure.isOpen}
         onClose={() => {
+          setSelectedProduct(undefined);
           createProductDisclosure.onClose();
         }}
-        product={updatingProduct}
+        product={selectedProduct}
+      />
+      <DeleteProductModal
+        isOpen={deleteProductDisclosure.isOpen}
+        onClose={()=> {
+          setSelectedProduct(undefined);
+          deleteProductDisclosure.onClose();
+        }}
+        product={selectedProduct ?? ({} as IProduct)}
       />
       <VStack maxW={"286px"} w={"100%"} shadow={"md"} gap={0}>
         {sideMenuItems.map((item) => (
@@ -143,7 +153,7 @@ export default function Dashboard() {
           setPageSize={setPageSize}
         />
         {isFetching ? (
-          <Center  w={"100%"} h={"50vh"}>
+          <Center w={"100%"} h={"50vh"}>
             <Spinner />
           </Center>
         ) : (
@@ -189,7 +199,7 @@ export default function Dashboard() {
                     fontSize={"14px"}
                     textColor={"#4D4D4D"}
                   >
-                    Action
+                    Actions
                   </Th>
                 </Tr>
               </Thead>
@@ -204,14 +214,14 @@ export default function Dashboard() {
                     </Td>
                     <Td color={"#4D4D4D"} fontSize={"12px"}>
                       <HStack>
-                        <Link href={product.payLink} target="_blank">
-                          {product.payLink}
+                        <Link href={"google.com"} target="_blank">
+                          {"google.com"}
                         </Link>
                         <IconButton
                           aria-label="Copy link"
                           variant={"ghost"}
                           onClick={() => {
-                            setValue(product.payLink);
+                            setValue("google.com");
                             onCopy();
                             toast({
                               title: `Link copied`,
@@ -221,6 +231,7 @@ export default function Dashboard() {
                           }}
                           w={"fit-content"}
                           icon={<CopyIcon />}
+                          size={"md"}
                           boxSize={"16px"}
                           color={"primary.500"}
                           cursor={"pointer"}
@@ -246,19 +257,33 @@ export default function Dashboard() {
                         </Text>
                       </HStack>
                     </Td>
-                    <Td>
-                      <Flex gap={"24px"}>
-                        <Icon
-                          boxSize={"16px"}
-                          as={FaPen}
+                    <Td ps={"10px"}>
+                      <Flex>
+                        <IconButton
+                          aria-label="Edit product"
+                          variant={"ghost"}
+                          boxSize={"20px"}
+                          icon={<FaPen />}
+                          size={"lg"}
                           color={"primary.500"}
                           cursor={"pointer"}
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            createProductDisclosure.onOpen();
+                          }}
                         />
-                        <Icon
-                          boxSize={"16px"}
-                          as={RiDeleteBin6Fill}
+                        <IconButton
+                          aria-label="Delete product"
+                          variant={"ghost"}
+                          size={"lg"}
+                          boxSize={"20px"}
+                          icon={<FaRegTrashAlt />}
                           color={"primary.500"}
                           cursor={"pointer"}
+                          onClick={() => {
+                            setSelectedProduct(product);
+                            deleteProductDisclosure.onOpen();
+                          }}
                         />
                       </Flex>
                     </Td>

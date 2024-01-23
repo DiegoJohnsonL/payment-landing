@@ -1,4 +1,5 @@
 import {
+  IconButton,
   Select,
   StyleFunctionProps,
   extendTheme,

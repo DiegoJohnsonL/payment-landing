@@ -48,6 +48,8 @@ import TablePagination from "@/components/table-pagination";
 import { CopyIcon, Search2Icon } from "@chakra-ui/icons";
 import { Link } from "@chakra-ui/next-js";
 import DeleteProductModal from "./_components/delete-product";
+import { usePathname } from "next/navigation";
+import { domainsConfig } from "@/config";
 
 export default function Dashboard() {
   const { onCopy, setValue, hasCopied } = useClipboard("");
@@ -75,10 +77,10 @@ export default function Dashboard() {
 
   const [selectedItemId, setSelectedItemId] = useState(sideMenuItems[0].id);
   const toast = useToast();
-
   return (
     <Flex
       py={"40px"}
+      w={"100%"}
       flexDirection={{ base: "column", md: "row" }}
       justify={"center"}
       align={{ base: "center", md: "flex-start" }}
@@ -114,7 +116,7 @@ export default function Dashboard() {
         gap={"32px"}
         align={"flex-start"}
       >
-        <HStack gap={"32px"}>
+        <HStack gap={"32px"} w="100%">
           <Image
             src={ProductBagImage}
             alt="product bag image"
@@ -210,18 +212,18 @@ export default function Dashboard() {
                       {product.name}
                     </Td>
                     <Td color={"#4D4D4D"} fontSize={"12px"}>
-                      {product.price}
+                      {product.price.toFixed(2)}
                     </Td>
                     <Td color={"#4D4D4D"} fontSize={"12px"}>
                       <HStack>
-                        <Link href={"google.com"} target="_blank">
-                          {"google.com"}
+                        <Link href={`/checkout/${product.id}`} target="_blank">
+                          {`${domainsConfig.urlPayment.replace("https://", "")}/checkout/${product.id}`}
                         </Link>
                         <IconButton
                           aria-label="Copy link"
                           variant={"ghost"}
                           onClick={() => {
-                            setValue("google.com");
+                            setValue(`${domainsConfig.urlPayment.replace("https://", "")}/checkout/${product.id}`);
                             onCopy();
                             toast({
                               title: `Link copied`,

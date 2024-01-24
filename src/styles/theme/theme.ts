@@ -2,6 +2,7 @@ import {
   IconButton,
   Select,
   StyleFunctionProps,
+  Table,
   extendTheme,
   type ThemeConfig,
 } from "@chakra-ui/react";
@@ -10,6 +11,7 @@ import { buttonTheme } from "./components/button";
 import { headingTheme } from "./components/heading";
 import { inputTheme } from "./components/input";
 import { selectTheme } from "./components/select";
+import { tableTheme } from "./components/table";
 
 export const theme = extendTheme({
   initialColorMode: "light",
@@ -32,5 +34,6 @@ export const theme = extendTheme({
     Heading: headingTheme,
     Input: inputTheme,
     Select: selectTheme,
+    Table: tableTheme,
   },
 });

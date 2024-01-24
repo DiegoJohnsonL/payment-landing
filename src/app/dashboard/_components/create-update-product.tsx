@@ -29,13 +29,14 @@ import {
   MenuList,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const createUpdateProductSchema = z.object({
   name: z.string().min(1, { message: "Product name is required" }),
   price: z.number().positive({ message: "Price must be positive" }),
-  status: z.boolean().optional(), // Make 'status' optional
+  status: z.boolean().optional(), 
 });
 
 type TCreateUpdateProductSchema = z.infer<typeof createUpdateProductSchema>;
@@ -47,7 +48,7 @@ export default function CreateUpdateProductDrawer({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  product: IProduct | undefined;
+  product?: IProduct;
 }) {
 
   const {
@@ -63,18 +64,6 @@ export default function CreateUpdateProductDrawer({
   const { mutate: createProduct } = useCreateProduct();
   const { mutate: updateProduct } = useUpdateProduct();
   const toast = useToast();
-
-  if (product) {
-    setValue("name", product.name);
-    setValue("price", product.price);
-    setValue("status", product.status === ProductStatus.Active);
-  } else {
-    setValue("name", "");
-    setValue("price", 0.0);
-    setValue("status", false);
-  }
-
-  console.log("product", product);
 
   function onSubmit(values: TCreateUpdateProductSchema) {
     if (product) {
@@ -114,6 +103,18 @@ export default function CreateUpdateProductDrawer({
         }
       );
   }
+
+  useEffect(() => {
+    if (product) {
+      setValue("name", product.name);
+      setValue("price", product.price);
+      setValue("status", product.status === ProductStatus.Active);
+    } else {
+      setValue("name", "");
+      setValue("price", 0.0);
+      setValue("status", true);
+    }
+  }, [product, setValue]);
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"sm"}>

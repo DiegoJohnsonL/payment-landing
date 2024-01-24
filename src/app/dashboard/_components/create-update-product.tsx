@@ -71,6 +71,9 @@ export default function CreateUpdateProductDrawer({
     setValue("name", product.name);
     setValue("price", product.price);
     setValue("active", product.status === ProductStatus.Active);
+  } else {
+    setValue("name", "");
+    setValue("price", 0.0);
   }
 
   function onSubmit(values: TCreateProductSchema | TUpdateProductSchema) {

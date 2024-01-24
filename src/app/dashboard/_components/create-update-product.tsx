@@ -27,16 +27,18 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Text,
+  Circle,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 const createUpdateProductSchema = z.object({
   name: z.string().min(1, { message: "Product name is required" }),
   price: z.number().positive({ message: "Price must be positive" }),
-  status: z.boolean().optional(), 
+  status: z.nativeEnum(ProductStatus).optional(),
 });
 
 type TCreateUpdateProductSchema = z.infer<typeof createUpdateProductSchema>;
@@ -50,11 +52,12 @@ export default function CreateUpdateProductDrawer({
   onClose: () => void;
   product?: IProduct;
 }) {
-
   const {
     register,
     handleSubmit,
     setValue,
+    watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<TCreateUpdateProductSchema>({
     resolver: zodResolver(createUpdateProductSchema),
@@ -72,7 +75,7 @@ export default function CreateUpdateProductDrawer({
           id: product.id,
           name: values.name,
           price: values.price,
-          status: values.status ? ProductStatus.Active : ProductStatus.Inactive,
+          status: values.status,
         } as IProduct,
         {
           onSuccess: () => {
@@ -108,13 +111,11 @@ export default function CreateUpdateProductDrawer({
     if (product) {
       setValue("name", product.name);
       setValue("price", product.price);
-      setValue("status", product.status === ProductStatus.Active);
+      setValue("status", product.status);
     } else {
-      setValue("name", "");
-      setValue("price", 0.0);
-      setValue("status", true);
+      reset();
     }
-  }, [product, setValue]);
+  }, [product, reset, setValue]);
 
   return (
     <Drawer isOpen={isOpen} placement="right" onClose={onClose} size={"sm"}>
@@ -162,21 +163,68 @@ export default function CreateUpdateProductDrawer({
                     <FormErrorMessage>{`${errors.price?.message}`}</FormErrorMessage>
                   </FormControl>
                   {product && (
-                    <FormControl isInvalid={!!errors.status}>
+                    <FormControl>
                       <FormLabel htmlFor="status">Status</FormLabel>
-                      <Menu id="status">
-                        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                          Actions
+                      <Menu size={"lg"}>
+                        <MenuButton
+                          type="button"
+                          w={"100%"}
+                          p={"16px"}
+                          border={"1px solid #DDE3EE"}
+                        >
+                          <HStack>
+                            <Circle
+                              size="12px"
+                              bg={
+                                watch("status") === ProductStatus.Active
+                                  ? "#6BC77C"
+                                  : "#F15042"
+                              }
+                              color="white"
+                            />
+                            <Text
+                              textTransform={"capitalize"}
+                              fontSize={"14px"}
+                            >
+                              {watch("status")}
+                            </Text>
+                          </HStack>
                         </MenuButton>
-                        <MenuList>
-                          <MenuItem>Download</MenuItem>
-                          <MenuItem>Create a Copy</MenuItem>
-                          <MenuItem>Mark as Draft</MenuItem>
-                          <MenuItem>Delete</MenuItem>
-                          <MenuItem>Attend a Workshop</MenuItem>
+                        <MenuList w={"100%"}>
+                          <MenuItem
+                            fontSize={"14px"}
+                            onClick={() =>
+                              setValue("status", ProductStatus.Active)
+                            }
+                          >
+                            <HStack>
+                              <Circle size="12px" bg="#6BC77C" color="white" />
+                              <Text
+                                textTransform={"capitalize"}
+                                fontSize={"14px"}
+                              >
+                                Active
+                              </Text>
+                            </HStack>
+                          </MenuItem>
+                          <MenuItem
+                            fontSize={"14px"}
+                            onClick={() =>
+                              setValue("status", ProductStatus.Inactive)
+                            }
+                          >
+                            <HStack>
+                              <Circle size="12px" bg="#F15042" color="white" />
+                              <Text
+                                textTransform={"capitalize"}
+                                fontSize={"14px"}
+                              >
+                                Inactive
+                              </Text>
+                            </HStack>
+                          </MenuItem>
                         </MenuList>
                       </Menu>
-                      <FormErrorMessage>{`${errors.status?.message}`}</FormErrorMessage>
                     </FormControl>
                   )}
                 </Stack>
@@ -196,7 +244,7 @@ export default function CreateUpdateProductDrawer({
                     isLoading={isSubmitting}
                     type="submit"
                   >
-                    Create
+                    {product ? "Update" : "Create"}
                   </Button>
                 </HStack>
               </Stack>

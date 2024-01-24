@@ -3,7 +3,7 @@
 import useCreateProduct from "@/hooks/api/products/use-create-product";
 import useUpdateProduct from "@/hooks/api/products/use-update-product";
 import IProduct, { ICreateProduct, ProductStatus } from "@/types/product";
-import { CloseIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, CloseIcon } from "@chakra-ui/icons";
 import {
   Drawer,
   DrawerOverlay,
@@ -23,26 +23,22 @@ import {
   NumberInputField,
   FormErrorMessage,
   useToast,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
 } from "@chakra-ui/react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const createProductSchema = z.object({
+const createUpdateProductSchema = z.object({
   name: z.string().min(1, { message: "Product name is required" }),
   price: z.number().positive({ message: "Price must be positive" }),
+  status: z.boolean().optional(), // Make 'status' optional
 });
 
-const updateProductSchema = z.object({
-  name: z.string().min(1, { message: "Product name is required" }),
-  price: z.number().positive({ message: "Price must be positive" }),
-  active: z.boolean(),
-  payLink: z.string().url({ message: "Link must be a valid URL" }),
-});
-
-type TCreateProductSchema = z.infer<typeof createProductSchema>;
-type TUpdateProductSchema = z.infer<typeof updateProductSchema>;
+type TCreateUpdateProductSchema = z.infer<typeof createUpdateProductSchema>;
 
 export default function CreateUpdateProductDrawer({
   isOpen,
@@ -53,40 +49,41 @@ export default function CreateUpdateProductDrawer({
   onClose: () => void;
   product: IProduct | undefined;
 }) {
-  const title = product ? "Update Product" : "Create Product";
-  const { mutate: createProduct } = useCreateProduct();
-  const { mutate: updateProduct } = useUpdateProduct();
-  const toast = useToast();
 
   const {
     register,
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting },
-  } = useForm<TCreateProductSchema | TUpdateProductSchema>({
-    resolver: zodResolver(createProductSchema),
+  } = useForm<TCreateUpdateProductSchema>({
+    resolver: zodResolver(createUpdateProductSchema),
   });
+
+  const title = product ? "Update Product" : "Create Product";
+  const { mutate: createProduct } = useCreateProduct();
+  const { mutate: updateProduct } = useUpdateProduct();
+  const toast = useToast();
 
   if (product) {
     setValue("name", product.name);
     setValue("price", product.price);
-    setValue("active", product.status === ProductStatus.Active);
+    setValue("status", product.status === ProductStatus.Active);
   } else {
     setValue("name", "");
     setValue("price", 0.0);
+    setValue("status", false);
   }
 
-  function onSubmit(values: TCreateProductSchema | TUpdateProductSchema) {
+  console.log("product", product);
+
+  function onSubmit(values: TCreateUpdateProductSchema) {
     if (product) {
-      const updateValues = values as TUpdateProductSchema;
       updateProduct(
         {
           id: product.id,
-          name: updateValues.name,
-          price: updateValues.price,
-          status: updateValues.active
-            ? ProductStatus.Active
-            : ProductStatus.Inactive,
+          name: values.name,
+          price: values.price,
+          status: values.status ? ProductStatus.Active : ProductStatus.Inactive,
         } as IProduct,
         {
           onSuccess: () => {
@@ -163,16 +160,24 @@ export default function CreateUpdateProductDrawer({
                     </Flex>
                     <FormErrorMessage>{`${errors.price?.message}`}</FormErrorMessage>
                   </FormControl>
-                  {/* {product && (
-                    <FormControl isInvalid={!!errors.name}>
-                      <FormLabel htmlFor="active">Status</FormLabel>
-                      <Input
-                        {...register("active")}
-                        id="active"
-                      />
-                      <FormErrorMessage>{`${errors.name?.message}`}</FormErrorMessage>
+                  {product && (
+                    <FormControl isInvalid={!!errors.status}>
+                      <FormLabel htmlFor="status">Status</FormLabel>
+                      <Menu id="status">
+                        <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                          Actions
+                        </MenuButton>
+                        <MenuList>
+                          <MenuItem>Download</MenuItem>
+                          <MenuItem>Create a Copy</MenuItem>
+                          <MenuItem>Mark as Draft</MenuItem>
+                          <MenuItem>Delete</MenuItem>
+                          <MenuItem>Attend a Workshop</MenuItem>
+                        </MenuList>
+                      </Menu>
+                      <FormErrorMessage>{`${errors.status?.message}`}</FormErrorMessage>
                     </FormControl>
-                  )} */}
+                  )}
                 </Stack>
 
                 <HStack w={"100%"} gap={"24px"} justify={"space-around"}>

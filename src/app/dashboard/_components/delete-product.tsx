@@ -24,11 +24,11 @@ export default function DeleteProductModal({
 }: {
   isOpen: boolean;
   onClose: () => void;
-  product: IProduct;
+  product?: IProduct;
 }) {
   const { mutate: deleteProduct } = useDeleteProduct();
   const onDelete = () => {
-    deleteProduct(product.id, {
+    deleteProduct(product!.id, {
       onSuccess: () => {
         onClose();
       },

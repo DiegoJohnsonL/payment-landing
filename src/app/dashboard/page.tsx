@@ -95,11 +95,11 @@ export default function Dashboard() {
       />
       <DeleteProductModal
         isOpen={deleteProductDisclosure.isOpen}
-        onClose={()=> {
+        onClose={() => {
           setSelectedProduct(undefined);
           deleteProductDisclosure.onClose();
         }}
-        product={selectedProduct ?? ({} as IProduct)}
+        product={selectedProduct}
       />
       <VStack maxW={"286px"} w={"100%"} shadow={"md"} gap={0}>
         {sideMenuItems.map((item) => (

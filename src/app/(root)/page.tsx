@@ -1,9 +1,9 @@
 'use client'
 
 import { Box, Flex, VStack } from "@chakra-ui/react";
-import HeroSection from "./components/hero-section";
-import PartnersSection from "./components/partners-section";
-import OurProductsSection from "./components/our-products-section";
+import HeroSection from "./_containers/hero-section";
+import PartnersSection from "./_containers/partners-section";
+import OurProductsSection from "./_containers/our-products-section";
 
 export default function Home() {
   return (

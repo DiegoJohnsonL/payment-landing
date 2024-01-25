@@ -1,5 +1,7 @@
 import IProduct, { ProductStatus } from "@/types/product";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { fakeDatabase } from "../db";
+import { RQueryKeys } from "@/config";
 
 interface PageResponse {
   data: IProduct[];
@@ -12,14 +14,6 @@ interface IPageParams {
   page: number;
   pageSize: number;
 }
-
-const fakeDatabase: IProduct[] = Array.from({ length: 50 }).map((_, index) => ({
-  id: index,
-  name: `Product ${index}`,
-  price: Math.random() * 100,
-  payLink: "https://www.google.com",
-  status: Math.random() > 0.5 ? ProductStatus.Active : ProductStatus.Inactive,
-}));
 
 function fetchProducts({ page, pageSize }: IPageParams) {
   const start = page * pageSize;
@@ -34,13 +28,13 @@ function fetchProducts({ page, pageSize }: IPageParams) {
         totalPages: totalPages,
         size: dataSlice.length,
       });
-    }, 100);
+    }, 50);
   });
 }
 
 export default function useGetProducts(params: IPageParams) {
   return useInfiniteQuery({
-    queryKey: ["products", params.page, params.pageSize],
+    queryKey: [RQueryKeys.products, params.page, params.pageSize],
     initialPageParam: params.page,
     queryFn: ({ pageParam }) =>
       fetchProducts({ page: pageParam, pageSize: params.pageSize }),

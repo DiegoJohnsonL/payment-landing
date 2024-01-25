@@ -10,8 +10,8 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import Ipad from "../assets/ipad.png";
-import PaymentLink from "../assets/payment-link.gif";
+import Ipad from "@/assets/root/ipad.png";
+import PaymentLink from "@/assets/root/payment-link.gif";
 import Link from "next/link";
 
 export default function OurProductsSection() {

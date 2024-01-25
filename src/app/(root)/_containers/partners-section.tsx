@@ -1,7 +1,6 @@
 "use client"
 
-import useGetPartners from "@/hooks/cms-api/use-get-partners";
-import useResponsive from "@/hooks/use-responsive";
+import useGetPartners from "@/hooks/cms/use-get-partners";
 import { Box, Flex, Spinner, Stack, Text, VStack } from "@chakra-ui/react";
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -9,6 +8,7 @@ import { Autoplay, Grid, Pagination, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/grid";
 import "swiper/css/pagination";
+import useResponsive from "@/hooks/utils/use-responsive";
 
 export default function PartnersSection() {
   const { isMobile, isTablet } = useResponsive();
@@ -22,7 +22,7 @@ export default function PartnersSection() {
       w={"100%"}
     >
       <Text fontSize={"14px"}>Powering the next generation B2B startups</Text>
-      <VStack gap={"32px"} w={"100%"}>
+      <VStack gap={"32px"} w={"100%"} maxW={"900px"}>
         {isLoading && (
           <Spinner
             thickness="4px"

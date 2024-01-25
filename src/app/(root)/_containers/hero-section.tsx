@@ -9,8 +9,8 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import heroGif from "../assets/hero-animation.gif";
-import HeroBackground from "../assets/hero-background.png";
+import heroGif from "@/assets/root/hero-animation.gif";
+import HeroBackground from "@/assets/root/hero-background.png";
 import Image from "next/image";
 import { Link } from "@chakra-ui/next-js";
 
@@ -25,26 +25,6 @@ export default function HeroSection() {
         position={"relative"}
         overflow={"hidden"}
       >
-        <Grid
-          templateColumns="repeat(auto-fill, minmax(50px, 1fr))"
-          templateRows="repeat(auto-fill, minmax(50px, 1fr))"
-          gap={0}
-          position="absolute"
-          w={"100%"}
-          h={"200vh"}
-          pointerEvents="none"
-        >
-          {Array.from({ length: 2000 }, (_, index) => (
-            <Box
-              key={index}
-              width="100%"
-              opacity={0.12}
-              height="100%"
-              border="1px solid white"
-              background="transparent"
-            />
-          ))}
-        </Grid>
         <VStack
           gap={"24px"}
           textAlign={"center"}
@@ -53,11 +33,13 @@ export default function HeroSection() {
           px={{ base: "20px", md: " 0px" }}
           zIndex={"10"}
         >
-          <Heading size={{base: "2xl", md: "3xl", lg: "4xl"}} fontWeight={"500"} maxW={"686px"}>
+          <Heading
+            size={{ base: "2xl", md: "3xl", lg: "4xl" }}
+            fontWeight={"500"}
+            maxW={"686px"}
+          >
             Cryptoasset-based <br />
-            <span style={{color: "#999"}}>
-              Payment System
-            </span>
+            <span style={{ color: "#999" }}>Payment System</span>
           </Heading>
           <Text maxW={"468px"}>
             Facilitate payments and fund transfers via cryptocurrencies on any
@@ -81,6 +63,27 @@ export default function HeroSection() {
             <Image src={heroGif.src} alt="my-gif" width={376} height={424} />
           </Box>
         </VStack>
+
+        <Grid
+          templateColumns="repeat(auto-fill, minmax(50px, 1fr))"
+          templateRows="repeat(auto-fill, minmax(50px, 1fr))"
+          gap={0}
+          position="absolute"
+          w={"100%"}
+          h={"200vh"}
+          pointerEvents="none"
+        >
+          {Array.from({ length: 2000 }, (_, index) => (
+            <Box
+              key={index}
+              width="100%"
+              opacity={0.12}
+              height="100%"
+              border="1px solid white"
+              background="transparent"
+            />
+          ))}
+        </Grid>
       </Flex>
     </Box>
   );

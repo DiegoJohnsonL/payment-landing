@@ -1,12 +1,18 @@
 export default interface IProduct {
-  id: number;
+  id: string;
   name: string;
   price: number;
-  payLink: string;
   status: ProductStatus;
 }
 
 export enum ProductStatus {
   Active = "active",
   Inactive = "inactive",
+}
+
+export  interface ICreateProduct {
+  name: string;
+  price: number;
+  payLink: string;
+  status: ProductStatus;
 }

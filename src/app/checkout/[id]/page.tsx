@@ -31,9 +31,9 @@ import {
 import Image from "next/image";
 import CheckoutGif from "@/assets/checkout/checkout-side.gif";
 import PersonalInfoStep from "./_components/personal-info-step";
-import useGetProduct from "@/hooks/api/product/use-get-product";
 import PaymentOptionsStep from "./_components/payment-options-step";
 import CheckoutCompleteStep from "./_components/checkout-complete-step";
+import useGetProduct from "@/hooks/api/product/use-get-product";
 
 const steps = [{ index: 1 }, { index: 2 }, { index: 3 }];
 

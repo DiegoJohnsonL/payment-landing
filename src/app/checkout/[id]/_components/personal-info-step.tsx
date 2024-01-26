@@ -11,7 +11,7 @@ export default function PersonalInfoStep({ product }: { product: IProduct }) {
             <VStack spacing={"24px"}>
               <HStack w={"100%"} gap={"24px"}>
                 <VStack flex={2} align={"flex-start"} gap={"12px"}>
-                  <Text fontWeight={"500"}>Product</Text>
+                  <Text fontWeight={"500"}>{product.name}</Text>
                   <Input defaultValue={`Product ${product.id}`} isReadOnly />
                 </VStack>
                 <VStack flex={1} align={"flex-start"} gap={"12px"}>
@@ -22,7 +22,7 @@ export default function PersonalInfoStep({ product }: { product: IProduct }) {
               <Divider orientation="horizontal" />
               <HStack w={"100%"} justify={"space-between"} gap={"12px"}>
                 <Text>Total</Text>
-                <Text>USD 10.00</Text>
+                <Text>USD {product.price}</Text>
               </HStack>
             </VStack>
           </CardBody>

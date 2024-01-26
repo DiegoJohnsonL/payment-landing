@@ -1,7 +1,7 @@
 "use client";
 
-import useCreateProduct from "@/hooks/api/products/use-create-product";
-import useUpdateProduct from "@/hooks/api/products/use-update-product";
+import useCreateProduct from "@/hooks/api/product/use-create-product";
+import useUpdateProduct from "@/hooks/api/product/use-update-product";
 import IProduct, { ICreateProduct, ProductStatus } from "@/types/product";
 import { ChevronDownIcon, CloseIcon } from "@chakra-ui/icons";
 import {

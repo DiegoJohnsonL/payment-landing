@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import Image from "next/image";
 import DeleteProductModalImage from "@/assets/dashboard/delete-product-modal.png";
-import useDeleteProduct from "@/hooks/api/products/use-delete-product";
+import useDeleteProduct from "@/hooks/api/product/use-delete-product";
 
 export default function DeleteProductModal({
   isOpen,

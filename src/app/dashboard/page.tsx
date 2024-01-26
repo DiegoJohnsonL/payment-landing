@@ -1,6 +1,6 @@
 "use client";
 
-import useGetProducts from "@/hooks/api/products/use-get-products";
+import useGetProducts from "@/hooks/api/product/use-get-products";
 import {
   Button,
   Center,

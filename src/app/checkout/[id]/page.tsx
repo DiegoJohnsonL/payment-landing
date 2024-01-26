@@ -2,14 +2,18 @@
 
 import {
   Box,
+  Button,
   Card,
   CardBody,
+  Checkbox,
   Container,
   Divider,
   Flex,
   HStack,
   Heading,
   Input,
+  Select,
+  Spacer,
   Stack,
   Step,
   StepDescription,
@@ -25,88 +29,122 @@ import {
   useSteps,
 } from "@chakra-ui/react";
 import Image from "next/image";
-import CheckoutGif from "@/assets/checkout/checkout-side.gif"
+import CheckoutGif from "@/assets/checkout/checkout-side.gif";
+import PersonalInfoStep from "./_components/personal-info-step";
+import useGetProduct from "@/hooks/api/product/use-get-product";
+
+const steps = [{ index: 1 }, { index: 2 }, { index: 3 }];
 
 export default function CheckoutPage({ params }: { params: { id: string } }) {
-  const steps = [1, 2, 3];
-
-  const { activeStep } = useSteps({
-    index: 1,
+  const { activeStep, goToNext, goToPrevious } = useSteps({
+    index: 0,
     count: steps.length,
-  });
+  },
+  );
+
+  const { data: product } = useGetProduct(params.id);
+  const onNext = () => {
+    goToNext();
+  }
+  const onBack = () => {
+    goToPrevious();
+  }
+  function renderStep() {
+    if (!product) return null;
+    switch (activeStep) {
+      case 0:
+        return <PersonalInfoStep product={product} />;
+      case 1:
+        return <></>;
+      case 2:
+      default:
+        return null;
+    }
+  }
 
   return (
-    <Flex justify={"center"} gap={"64px"} flexDirection={{ base: "row" }}>
-      <Stack flex={1} align={"center"} justify={"center"} pt={"64px"}>
-        <Stack gap={"40px"} maxW={"664px"} w={"100%"}>
-          <VStack gap={"24px"} align={"flex-start"}>
-            <Heading fontSize={"20px"}>Product Summary</Heading>
-            <Card w={"100%"}>
-              <CardBody>
-                <VStack spacing={4}>
-                  <HStack w={"100%"}>
-                    <VStack flex={2} align={"flex-start"}>
-                      <Text>Product</Text>
-                      <Input defaultValue={`Product ${params.id}`} isReadOnly />
-                    </VStack>
-                    <VStack flex={1} align={"flex-start"}>
-                      <Text>Quantity</Text>
-                      <Input defaultValue={`1`} isReadOnly />
-                    </VStack>
-                  </HStack>
-                  <Divider orientation="horizontal" />
-                  <HStack w={"100%"} justify={"space-between"}>
-                    <Text>Total</Text>
-                    <Text>USD 10.00</Text>
-                  </HStack>
-                </VStack>
-              </CardBody>
-            </Card>
-          </VStack>
-          <VStack gap={"24px"} align={"flex-start"}>
-            <Heading fontSize={"20px"}>Contact Information</Heading>
-            <Card w={"100%"}>
-              <CardBody>
-                <VStack spacing={4} >
-                  <VStack flex={2} align={"flex-start"} w={"100%"}>
-                    <Text>Full Name</Text>
-                    <Input placeholder="Enter Full name" />
-                  </VStack>
-                </VStack>
-              </CardBody>
-            </Card>
-          </VStack>
+    <Flex flex={1} gap={"64px"} flexDirection={{ base: "row" }}>
+      {/* Left Side */}
+      <Stack flex={1} align={"center"} pt={"64px"} px={"20px"} pb={"44px"}>
+        <Stack
+          gap={"40px"}
+          maxW={"664px"}
+          w={"100%"}
+          align={"center"}
+          justify={"flex-start"}
+          flex={1}
+        >
+          {renderStep()}
+          <Spacer />
+          <Flex gap={"24px"}>
+            {activeStep > 0 && (
+              <Button
+                w={"auto"}
+                px={"78px"}
+                h={"48px"}
+                justifySelf={"flex-end"}
+                display={"flex"}
+                variant={"outline"}
+                onClick={onBack}
+              >
+                Back
+              </Button>
+            )}
+            <Button
+              w={"auto"}
+              px={"78px"}
+              h={"48px"}
+              justifySelf={"flex-end"}
+              display={"flex"}
+              onClick={onNext}
+            >
+              Continue
+            </Button>
+          </Flex>
         </Stack>
       </Stack>
+
+      {/* right side */}
       <Stack
         flex={1}
         align={"center"}
         boxShadow={"0px 1.063px 12px 0px rgba(0, 0, 0, 0.05)"}
         borderRadius={"4px"}
+        gap={"40px"}
+        w={"100%"}
         pt={"64px"}
       >
-        <Stepper index={activeStep} maxW={"229px"}>
-          {steps.map((step, index) => (
-            <Step key={index}>
-              <StepIndicator>
-                <StepStatus
-                  complete={<StepIcon />}
-                  incomplete={<StepNumber />}
-                  active={<StepNumber />}
-                />
-              </StepIndicator>
-
-              <Box flexShrink="0">
-                <StepTitle>{step}</StepTitle>
-              </Box>
-
-              <StepSeparator />
-            </Step>
-          ))}
-        </Stepper>
-        <Heading fontSize={"24px"} lineHeight={"28px"}>Personal information</Heading>
-        <Text>Please fill in the form on the left to complete the purchase successfully.</Text>
-        <Image src={CheckoutGif.src}  alt="" height={296} width={296}/>
+        <Box w={"100%"} maxW={"229px"}>
+          <Stepper index={activeStep} size={"lg"}>
+            {steps.map((step, index) => (
+              <Step key={index}>
+                <StepIndicator>
+                  <StepStatus
+                    complete={<StepNumber />}
+                    incomplete={<StepNumber />}
+                    active={<StepNumber />}
+                  />
+                </StepIndicator>
+                <StepSeparator />
+              </Step>
+            ))}
+          </Stepper>
+        </Box>
+        <Flex
+          flexDirection={"column"}
+          gap={"16px"}
+          align={"center"}
+          textAlign={"center"}
+        >
+          <Heading fontSize={"24px"} lineHeight={"28px"} pt={"100px"}>
+            Personal information
+          </Heading>
+          <Text maxW={"322px"}>
+            Please fill in the form on the left to complete the purchase
+            successfully
+          </Text>
+        </Flex>
+        <Image src={CheckoutGif.src} alt="" height={296} width={296} />
       </Stack>
     </Flex>
   );

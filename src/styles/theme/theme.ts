@@ -1,4 +1,5 @@
 import {
+  Checkbox,
   IconButton,
   Select,
   StyleFunctionProps,
@@ -12,6 +13,7 @@ import { headingTheme } from "./components/heading";
 import { inputTheme } from "./components/input";
 import { selectTheme } from "./components/select";
 import { tableTheme } from "./components/table";
+import { checkboxTheme } from "./components/checkbox";
 
 export const theme = extendTheme({
   initialColorMode: "light",
@@ -35,5 +37,6 @@ export const theme = extendTheme({
     Input: inputTheme,
     Select: selectTheme,
     Table: tableTheme,
+    Checkbox: checkboxTheme
   },
 });

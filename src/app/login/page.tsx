@@ -130,11 +130,10 @@ export default function Login() {
                 <PinInputField w={"56px"} h={"80px"} fontSize={"24px"} color={"#0047BB"} bgColor={"rgba(250, 252, 255, 0.80)"} border={"1.5px solid #DDE3EE"}/>
               </PinInput>
             </HStack>
-            <Text fontWeight={"300"} pt={"16px"}>
+            <Text fontWeight={"300"} pt={"16px"} fontSize={"14px"}>
               Didn&rsquo;t get a code?{" "}
               <Text
                 as="span"
-                fontSize={"14px"}
                 cursor={"pointer"}
                 textColor={"primary.500"}
                 fontWeight={"400"}

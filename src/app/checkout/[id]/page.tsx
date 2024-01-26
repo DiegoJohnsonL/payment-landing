@@ -32,12 +32,14 @@ import Image from "next/image";
 import CheckoutGif from "@/assets/checkout/checkout-side.gif";
 import PersonalInfoStep from "./_components/personal-info-step";
 import useGetProduct from "@/hooks/api/product/use-get-product";
+import PaymentOptionsStep from "./_components/payment-options-step";
+import CheckoutCompleteStep from "./_components/checkout-complete-step";
 
 const steps = [{ index: 1 }, { index: 2 }, { index: 3 }];
 
 export default function CheckoutPage({ params }: { params: { id: string } }) {
   const { activeStep, goToNext, goToPrevious } = useSteps({
-    index: 0,
+    index: 1,
     count: steps.length,
   },
   );
@@ -55,10 +57,10 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
       case 0:
         return <PersonalInfoStep product={product} />;
       case 1:
-        return <></>;
+        return <PaymentOptionsStep/>
       case 2:
       default:
-        return null;
+        return <CheckoutCompleteStep/>;
     }
   }
 
@@ -91,15 +93,15 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
               </Button>
             )}
             <Button
-              w={"auto"}
-              px={"78px"}
-              h={"48px"}
-              justifySelf={"flex-end"}
-              display={"flex"}
-              onClick={onNext}
-            >
-              Continue
-            </Button>
+                w={"auto"}
+                px={"78px"}
+                h={"48px"}
+                justifySelf={"flex-end"}
+                display={"flex"}
+                onClick={onNext}
+              >
+                {activeStep === steps.length  ? "Finish" : "Next"}
+              </Button>
           </Flex>
         </Stack>
       </Stack>

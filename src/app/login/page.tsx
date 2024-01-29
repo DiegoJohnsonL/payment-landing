@@ -9,8 +9,6 @@ import {
   HStack,
   Heading,
   Input,
-  NumberInput,
-  NumberInputField,
   PinInput,
   PinInputField,
   Select,
@@ -20,18 +18,16 @@ import {
 } from "@chakra-ui/react";
 import LoginLogo from "@/assets/login/login-logo.svg";
 import Logo from "@/components/logo";
-import { FieldName, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
+import { authenticate } from "@/actions/auth";
+import { authFormSchema } from "@/types/schemas/auth-schema";
 
-const requestAuthFormSchema = z.object({
-  phone: z.string().min(1, { message: "Phone number is required" }),
-  twoFaCode: z.string().min(1, { message: "Verification code is required" }),
-});
+type AuthFormInputs = z.infer<typeof authFormSchema>;
 
-type TRequestAuthSchema = z.infer<typeof requestAuthFormSchema>;
 const steps = [
   {
     id: "Step 1",
@@ -45,35 +41,43 @@ const steps = [
   },
 ];
 
+const pinInputFieldStyles = {
+  width: { base: "40px", md: "56px" },
+  height: { base: "60px", md: "80px" },
+  fontSize: "24px",
+  color: "#0047BB",
+  bgColor: "rgba(250, 252, 255, 0.80)",
+  border: "1.5px solid #DDE3EE",
+};
+
 export default function Login() {
   const [currentStep, setCurrentStep] = useState(0);
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
-    reset,
     trigger,
     formState: { errors, isSubmitting },
-  } = useForm<TRequestAuthSchema>({
-    resolver: zodResolver(requestAuthFormSchema),
+  } = useForm<AuthFormInputs>({
+    resolver: zodResolver(authFormSchema),
   });
+
+  const onSubmit = async (data: AuthFormInputs) => {
+    const response = await authenticate(data);
+    if (response?.token) {
+      router.push("/dashboard");
+    }
+  };
+
+  type FieldName = keyof AuthFormInputs;
 
   const onNext = async () => {
     const fields = steps[currentStep].fields;
-    const output = await trigger(fields as FieldName<TRequestAuthSchema>[], {
-      shouldFocus: true,
-    });
-
+    const output = await trigger(fields as FieldName[]);
     if (!output) return;
-
-    switch (currentStep) {
-      case 0:
-        return setCurrentStep(1);
-      case 1:
-        return router.push("/dashboard");
-    }
+    return setCurrentStep(1);
   };
 
   const renderStep = () => {
@@ -118,16 +122,16 @@ export default function Login() {
             <Text pt={"12px"} fontSize={"14px"} lineHeight={"16px"}>
               We will send you an SMS with a verification code.
             </Text>
-            <HStack pt={"24px"} gap={"16px"}>
-              <PinInput  size={"lg"} onChange={(value: string) => {
-                setValue("twoFaCode", value);
-              }} >
-                <PinInputField w={"56px"} h={"80px"} fontSize={"24px"} color={"#0047BB"} bgColor={"rgba(250, 252, 255, 0.80)"} border={"1.5px solid #DDE3EE"}/>
-                <PinInputField w={"56px"} h={"80px"} fontSize={"24px"} color={"#0047BB"} bgColor={"rgba(250, 252, 255, 0.80)"} border={"1.5px solid #DDE3EE"}/>
-                <PinInputField w={"56px"} h={"80px"} fontSize={"24px"} color={"#0047BB"} bgColor={"rgba(250, 252, 255, 0.80)"} border={"1.5px solid #DDE3EE"}/>
-                <PinInputField w={"56px"} h={"80px"} fontSize={"24px"} color={"#0047BB"} bgColor={"rgba(250, 252, 255, 0.80)"} border={"1.5px solid #DDE3EE"}/>
-                <PinInputField w={"56px"} h={"80px"} fontSize={"24px"} color={"#0047BB"} bgColor={"rgba(250, 252, 255, 0.80)"} border={"1.5px solid #DDE3EE"}/>
-                <PinInputField w={"56px"} h={"80px"} fontSize={"24px"} color={"#0047BB"} bgColor={"rgba(250, 252, 255, 0.80)"} border={"1.5px solid #DDE3EE"}/>
+            <HStack pt={"24px"} gap={{ base: "12px", md: "16px" }}>
+              <PinInput
+                size={"lg"}
+                onChange={(value: string) => {
+                  setValue("twoFaCode", value);
+                }}
+              >
+                {[1, 2, 3, 4, 5, 6].map((index) => (
+                  <PinInputField key={index} {...pinInputFieldStyles} />
+                ))}
               </PinInput>
             </HStack>
             <Text fontWeight={"300"} pt={"16px"} fontSize={"14px"}>
@@ -148,9 +152,9 @@ export default function Login() {
 
   return (
     <VStack pt={{ base: "80px", md: "96px" }} gap={"48px"} px={"20px"}>
-      <Card maxW={"519px"}>
+      <Card maxW={"519px"} w={"100%"}>
         <CardBody px={{ base: "20px", sm: "40px" }} py={"32px"}>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <VStack w={"100%"} gap="0" textAlign={"center"}>
               <Logo width={120} height={32} colorMode="light" />
               <Heading
@@ -163,10 +167,11 @@ export default function Login() {
               {renderStep()}
               <Button
                 size={"lg"}
+                type={currentStep === 0 ? "button" : "submit"}
                 mt={"32px"}
                 fontSize={"14px"}
-                px={"87px"}
-                onClick={onNext}
+                onClick={() => currentStep === 0 && onNext()}
+                w={"204px"}
               >
                 {currentStep === 0 ? "Next" : "Verify"}
               </Button>

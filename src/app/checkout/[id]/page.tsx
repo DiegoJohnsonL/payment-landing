@@ -100,7 +100,7 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
                 display={"flex"}
                 onClick={onNext}
               >
-                {activeStep === steps.length  ? "Finish" : "Next"}
+                {activeStep === steps.length - 1  ? "Finish" : "Next"}
               </Button>
           </Flex>
         </Stack>

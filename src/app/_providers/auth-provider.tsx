@@ -19,9 +19,9 @@ export default function AuthProvider({
   const { data: userSession, refetch } = useQuery({
     queryKey: ["userSession"],
     queryFn: async () => getUserSession(),
-    staleTime: 1,
+    staleTime: 0,
   });
-
+  
   useEffect(() => {
     refetch();
   }, [pathname, refetch]);
@@ -36,7 +36,6 @@ export default function AuthProvider({
     </AuthContext.Provider>
   );
 }
-
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

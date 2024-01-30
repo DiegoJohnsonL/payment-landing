@@ -1,5 +1,6 @@
 import { useDashboardMenuItems } from "@/hooks/utils/use-menu-items";
 import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, {
   createContext,
   use,
@@ -11,25 +12,29 @@ import React, {
 const NavbarContext = createContext(
   {} as {
     selectedItemId: string | undefined;
-    setSelectedItemId: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setSelectedItemId: (id: string) => void;
   }
 );
 
 export const NavbarProvider = ({ children }: { children: React.ReactNode }) => {
-  const [selectedItemId, setSelectedItemId] = useState<string>();
+  const [selectedItemId, setItemId] = useState<string>();
   const pathname = usePathname();
   const searchParams = useSearchParams()
   const tab = searchParams.get("tab");
   const dashboardMenuItems = useDashboardMenuItems();
+  const router = useRouter();
 
   useEffect(() => {
     if (pathname.includes("dashboard")){
-      setSelectedItemId(tab ?? dashboardMenuItems[0].id);
+      setItemId(tab ?? dashboardMenuItems[0].id);
     } else {
-      setSelectedItemId(undefined);
+      setItemId(undefined);
     }
-  }, [dashboardMenuItems, pathname, setSelectedItemId, tab]);
+  }, [dashboardMenuItems, pathname, router, setItemId, tab]);
 
+  const setSelectedItemId = (id: string) => {
+    router.push("/dashboard?tab=" + id);
+  }
   const value = {
     selectedItemId,
     setSelectedItemId,

@@ -1,4 +1,5 @@
 import { logout } from "@/actions/auth";
+import { useNavbar } from "@/app/_providers/navbar-selected";
 import { ISidenavItem } from "@/types/sidenav-item";
 import { Box, Flex, Icon, Text } from "@chakra-ui/react";
 import React from "react";
@@ -10,7 +11,8 @@ export default function SidenavItem({
   item: ISidenavItem;
   selectedId?: string;
 }) {
-const isSelected = item.id === selectedId;
+  const { setSelectedItemId } = useNavbar();
+  const isSelected = item.id === selectedId;
   return (
     <Flex
       py={"24px"}
@@ -37,6 +39,8 @@ const isSelected = item.id === selectedId;
         onClick={() => {
           if (item.id == "logout") {
             logout();
+          } else {
+            setSelectedItemId(item.id)
           }
         }}
       >

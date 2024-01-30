@@ -38,9 +38,8 @@ import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const { userSession } = useAuth();
-  const { selectedItemId, setSelectedItemId } = useNavbar();
+  const { selectedItemId } = useNavbar();
   const sideNavbarDisclosure = useDisclosure();
-
   const router = useRouter();
   const dashboardMenuItems: ISidenavItem[] = useDashboardMenuItems();
   return (

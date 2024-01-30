@@ -7,6 +7,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 type AuthFormInputs = z.infer<typeof authFormSchema>;
+
 const tempUser: IUserSession = {
   id: "1",
   phone: "1234567890",
@@ -39,11 +40,10 @@ export async function isUserLoggedIn() {
 export async function logout() {
   cookies().delete("session");
   redirect("/login");
-  return true;
 }
 
 export async function getUserSession() {
-  const userSession = cookies().get("session");
+  const userSession = cookies().get("session")?.value;
   if (!userSession) {
     return null;
   }

@@ -58,7 +58,7 @@ export default function Dashboard() {
         shadow={{ base: "none", md: "md" }}
         maxW={"912px"}
         w={"100%"}
-        p={{ base: "20px", md: "40px" }}
+        p={{ base: "0", sm: "20px", md: "40px" }}
         gap={"32px"}
         align={"flex-start"}
       >

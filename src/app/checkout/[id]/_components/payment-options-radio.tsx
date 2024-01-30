@@ -118,15 +118,15 @@ function CustomRadio({ radio, paymentOption, isDisabled }: any) {
             />
           )}
           <HStack gap={"24px"}>
-            <paymentOption.icon />
+            <Icon as={paymentOption.icon} boxSize={"44px"} />
             <Stack spacing={"4px"}>
               <Text fontWeight={"500"}>{__(paymentOption.name)}</Text>
               <Text>{__(paymentOption.description)}</Text>
             </Stack>
           </HStack>
-          <Spacer/>
-          <Image src={paymentOption.image} width={40} height={32} alt=""/>
-          <Icon as={ChevronRightIcon} boxSize={"24px"}/>
+          <Spacer />
+          <Image src={paymentOption.image} width={40} height={32} alt="" />
+          <Icon as={ChevronRightIcon} boxSize={"24px"} />
         </HStack>
       </Flex>
     </Box>

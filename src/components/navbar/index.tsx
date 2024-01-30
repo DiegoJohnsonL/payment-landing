@@ -159,7 +159,12 @@ export default function Navbar() {
                           cursor="pointer"
                           key={item.id + "-sidenav"}
                           onClick={() => {
-                            router.push(`/dashboard?tab=${item.id}`);
+                            if (item.id === "logout") {
+                              logout();
+                            } else {
+                              router.push(`/dashboard?tab=${item.id}`);
+                            }
+                            sideNavbarDisclosure.onClose();
                           }}
                         >
                           <Icon
@@ -179,7 +184,7 @@ export default function Navbar() {
                 </AccordionItem>
               </Accordion>
             ) : (
-              <Link href={"/login"}>
+              <Link href={"/login"} onClick={sideNavbarDisclosure.onClose}>
                 <Button width={["auto", "136px"]} fontSize={"12px"}>
                   Get Started
                 </Button>

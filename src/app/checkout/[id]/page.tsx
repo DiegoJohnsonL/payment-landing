@@ -65,7 +65,7 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
   return (
     <Flex flex={1} gap={"40px"} flexDirection={{ base: "row" }}>
       {/* Left Side */}
-      <Stack flex={1} align={"center"} pt={"64px"} px={"20px"} pb={"44px"}>
+      <Stack flex={1} align={"center"} pt={{base: "32px", md: "64px"}} px={"20px"} pb={"44px"}>
         <Stack
           gap={"40px"}
           maxW={"664px"}

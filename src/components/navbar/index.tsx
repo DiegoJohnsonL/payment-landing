@@ -79,7 +79,11 @@ export default function Navbar() {
                 </Box>
                 <Spacer />
                 <HStack>
-                  <Avatar bg="#EFF3FF" boxSize={"40px"} src='https://bit.ly/ryan-florence'/>
+                  <Avatar
+                    bg="#EFF3FF"
+                    boxSize={"40px"}
+                    src="https://bit.ly/ryan-florence"
+                  />
                   <Text ms={"4px"} color={"black"} fontSize={"14px"}>
                     Temp User
                   </Text>
@@ -175,7 +179,16 @@ export default function Navbar() {
                                 : "black"
                             }
                           />
-                          <Text fontSize={"14px"}>{item.label}</Text>
+                          <Text
+                            fontSize={"14px"}
+                            color={
+                              item.id === selectedItemId
+                                ? "primary.500"
+                                : "black"
+                            }
+                          >
+                            {item.label}
+                          </Text>
                         </HStack>
                       ))}
                     </Stack>

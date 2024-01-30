@@ -9,6 +9,9 @@ export function middleware(request: NextRequest) {
 
   // Check if currentUser exists
   if (currentUser) {
+    if (currentPath === "/login") {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
     return NextResponse.next();
   }
 

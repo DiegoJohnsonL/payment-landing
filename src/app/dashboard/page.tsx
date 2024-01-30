@@ -15,6 +15,7 @@ import {
   InputLeftElement,
   List,
   ListItem,
+  Show,
   Spinner,
   Table,
   TableCaption,
@@ -34,12 +35,8 @@ import {
 import { useEffect, useState } from "react";
 import { ISidenavItem } from "@/types/sidenav-item";
 import SidenavItem from "./_components/sidenav-item";
-import { LuStore } from "react-icons/lu";
-import { IoDocumentTextOutline } from "react-icons/io5";
-import { BiMoneyWithdraw } from "react-icons/bi";
-import { IoSettingsOutline } from "react-icons/io5";
+
 import { FaPen, FaRegTrashAlt } from "react-icons/fa";
-import { TbLogout2 } from "react-icons/tb";
 import ProductBagImage from "@/assets/dashboard/products-bag.svg?url";
 import Image from "next/image";
 import CreateUpdateProductDrawer from "./_components/create-update-product";
@@ -48,8 +45,9 @@ import TablePagination from "@/components/table-pagination";
 import { CopyIcon, Search2Icon } from "@chakra-ui/icons";
 import { Link } from "@chakra-ui/next-js";
 import DeleteProductModal from "./_components/delete-product";
-import { usePathname } from "next/navigation";
 import { domainsConfig } from "@/config";
+import { useDashboardMenuItems } from "@/hooks/utils/use-menu-items";
+import { useNavbar } from "../_providers/navbar-selected";
 
 export default function Dashboard() {
   const { onCopy, setValue, hasCopied } = useClipboard("");
@@ -63,19 +61,9 @@ export default function Dashboard() {
     });
   const products = data ? data.pages.flatMap((page) => page.data) : [];
   const [selectedProduct, setSelectedProduct] = useState<IProduct>();
-  const sideMenuItems: ISidenavItem[] = [
-    { id: "products", icon: LuStore, label: "Products" },
-    {
-      id: "last_transaction",
-      icon: IoDocumentTextOutline,
-      label: "Last Transactions",
-    },
-    { id: "withdrawal", icon: BiMoneyWithdraw, label: "Withdrawal" },
-    { id: "settings", icon: IoSettingsOutline, label: "Settings" },
-    { id: "logout", icon: TbLogout2, label: "Log out" },
-  ];
+  const dashboardMenuItems: ISidenavItem[] = useDashboardMenuItems();
+  const { selectedItemId, setSelectedItemId } = useNavbar();
 
-  const [selectedItemId, setSelectedItemId] = useState(sideMenuItems[0].id);
   const toast = useToast();
   return (
     <Flex
@@ -103,11 +91,17 @@ export default function Dashboard() {
         }}
         product={selectedProduct}
       />
-      <VStack maxW={"286px"} w={"100%"} shadow={"md"} gap={0}>
-        {sideMenuItems.map((item) => (
-          <SidenavItem key={item.id} item={item} selectedId={selectedItemId} />
-        ))}
-      </VStack>
+      <Show above="md">
+        <VStack maxW={"286px"} w={"100%"} shadow={"md"} gap={0}>
+          {dashboardMenuItems.map((item) => (
+            <SidenavItem
+              key={item.id}
+              item={item}
+              selectedId={selectedItemId}
+            />
+          ))}
+        </VStack>
+      </Show>
       <VStack
         shadow={"md"}
         maxW={"912px"}
@@ -217,13 +211,21 @@ export default function Dashboard() {
                     <Td color={"#4D4D4D"} fontSize={"12px"}>
                       <HStack>
                         <Link href={`/checkout/${product.id}`} target="_blank">
-                          {`${domainsConfig.urlPayment.replace("https://", "")}/checkout/${product.id}`}
+                          {`${domainsConfig.urlPayment.replace(
+                            "https://",
+                            ""
+                          )}/checkout/${product.id}`}
                         </Link>
                         <IconButton
                           aria-label="Copy link"
                           variant={"ghost"}
                           onClick={() => {
-                            setValue(`${domainsConfig.urlPayment.replace("https://", "")}/checkout/${product.id}`);
+                            setValue(
+                              `${domainsConfig.urlPayment.replace(
+                                "https://",
+                                ""
+                              )}/checkout/${product.id}`
+                            );
                             onCopy();
                             toast({
                               title: `Link copied`,

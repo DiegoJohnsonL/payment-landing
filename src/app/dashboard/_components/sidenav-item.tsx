@@ -8,7 +8,7 @@ export default function SidenavItem({
   selectedId,
 }: {
   item: ISidenavItem;
-  selectedId: string;
+  selectedId?: string;
 }) {
 const isSelected = item.id === selectedId;
   return (

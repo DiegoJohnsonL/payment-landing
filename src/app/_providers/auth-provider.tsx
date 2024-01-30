@@ -2,7 +2,7 @@ import { getUserSession } from "@/actions/auth";
 import { IUserSession } from "@/types/user-session";
 import { useQuery } from "@tanstack/react-query";
 import { usePathname } from "next/navigation";
-import React, { createContext, useEffect } from "react";
+import React, { createContext, useContext, useEffect } from "react";
 
 export const AuthContext = createContext(
   {} as {
@@ -36,3 +36,12 @@ export default function AuthProvider({
     </AuthContext.Provider>
   );
 }
+
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within a AuthProvider");
+  }
+  return context;
+};

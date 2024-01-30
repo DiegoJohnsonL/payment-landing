@@ -35,11 +35,11 @@ import PaymentOptionsStep from "./_components/payment-options-step";
 import CheckoutCompleteStep from "./_components/checkout-complete-step";
 import useGetProduct from "@/hooks/api/product/use-get-product";
 
-const steps = [{ index: 1 }, { index: 2 }, { index: 3 }];
+const steps = [{ index: 0 }, { index: 1 }, { index: 2 }];
 
 export default function CheckoutPage({ params }: { params: { id: string } }) {
   const { activeStep, goToNext, goToPrevious } = useSteps({
-    index: 1,
+    index: 0,
     count: steps.length,
   },
   );

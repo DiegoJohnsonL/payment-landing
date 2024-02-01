@@ -10,4 +10,5 @@ export type Transaction = {
   createdAt: string;
   updatedAt: string;
   status: string;
+  type: string;
 };

@@ -85,7 +85,7 @@ export default function Navbar() {
                     src="https://bit.ly/ryan-florence"
                   />
                   <Text ms={"4px"} color={"black"} fontSize={"14px"}>
-                    Temp User
+                    Ryan Florence
                   </Text>
                   {/* <ChevronDownIcon boxSize={"24px"} color={"primary.900"} /> */}
                 </HStack>

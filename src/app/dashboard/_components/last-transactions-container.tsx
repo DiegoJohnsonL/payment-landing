@@ -6,12 +6,7 @@ import {
   InputGroup,
   InputLeftElement,
   Input,
-  Button,
   Text,
-  Circle,
-  Flex,
-  IconButton,
-  Link,
   Table,
   TableContainer,
   Tbody,
@@ -19,17 +14,24 @@ import {
   Th,
   Thead,
   Tr,
+  Stack,
+  Icon,
+  Center,
+  Circle,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import TransactionHeadingImage from "@/assets/dashboard/transactions-heading.svg?url";
 import { Transaction } from "@/types/transaction";
+import { FaRegCircleCheck } from "react-icons/fa6";
+import { MdCallReceived, MdCallMade } from "react-icons/md";
+import { IoMdTime } from "react-icons/io";
 
 export default function LastTransactionsContainer() {
   const transactions: Transaction[] = [
     //create a list of 3 transactions
     {
       id: "1",
-      amount: 100,
+      amount: 100.00,
       date: "2021-10-10",
       description: "Test transaction",
       paymentMethod: "Credit card",
@@ -39,10 +41,11 @@ export default function LastTransactionsContainer() {
       createdAt: "2021-10-10",
       updatedAt: "2021-10-10",
       status: "completed",
+      type: "purchase",
     },
     {
       id: "2",
-      amount: 200,
+      amount: 56.50,
       date: "2021-10-10",
       description: "Test transaction",
       paymentMethod: "Credit card",
@@ -52,8 +55,52 @@ export default function LastTransactionsContainer() {
       createdAt: "2021-10-10",
       updatedAt: "2021-10-10",
       status: "processing",
+      type: "deposit",
     },
   ];
+
+  const renderStatusIcon = (status: string) => {
+    switch (status) {
+      case "completed":
+        return (
+          <Icon as={FaRegCircleCheck} boxSize={"20px"} color={"#6BC77C"} />
+        );
+      case "processing":
+        return (
+          <Icon as={IoMdTime} boxSize={"20px"} color={"#ED6625"} />
+        );
+      default:
+        return <></>;
+    }
+  }
+
+  const renderTypeIcon = (type: string) => {
+    switch (type) {
+      case "purchase":
+        return (
+          <Circle size={"24px"} bgColor={"#FFE8E5"}>
+            <Icon
+              as={MdCallMade}
+              boxSize={"15px"}
+              color={"#F15042"}
+              borderRadius={"full"}
+            />
+          </Circle>
+        );
+      case "deposit":
+      default:
+        return (
+          <Circle size={"24px"} bgColor={"#DAF1DF"}>
+            <Icon
+              as={MdCallReceived}
+              boxSize={"15px"}
+              color={"#6BC77C"}
+              borderRadius={"full"}
+            />
+          </Circle>
+        );
+    }
+  };
 
   return (
     <>
@@ -129,18 +176,29 @@ export default function LastTransactionsContainer() {
           <Tbody>
             {transactions.map((transaction, index) => (
               <Tr key={transaction.id + "-" + index}>
-                <Td color={"#4D4D4D"} fontSize={"12px"}>
-                  {transaction.date}
+                <Td  fontSize={"14px"}>
+                  <HStack gap={"18px"} textTransform={"capitalize"}>
+                    {renderTypeIcon(transaction.type)}
+                    <Stack gap={"4px"}>
+                      <Text>{transaction.date}</Text>
+                      <Text color={"#999"}>{transaction.type}</Text>
+                    </Stack>
+                  </HStack>
                 </Td>
-                <Td color={"#4D4D4D"} fontSize={"12px"}>
+                <Td fontSize={"14px"}>
                   {transaction.customerName}
                 </Td>
-                <Td color={"#4D4D4D"} fontSize={"12px"}>
+                <Td fontSize={"14px"}>
                   {transaction.paymentMethod}
                 </Td>
-                <Td fontSize={"12px"}>{transaction.code}</Td>
-                <Td ps={"10px"} fontSize={"12px"}>
-                  {transaction.amount}
+                <Td fontSize={"14px"} color={"primary.500"}>
+                  {transaction.code}
+                </Td>
+                <Td fontSize={"14px"}>
+                  <HStack gap={"16px"}>
+                    <Text>+ {transaction.amount}</Text>
+                    {renderStatusIcon(transaction.status)}
+                  </HStack>
                 </Td>
               </Tr>
             ))}

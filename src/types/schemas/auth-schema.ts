@@ -1,6 +1,12 @@
 import { z } from "zod";
+import { isPossibleNumber } from "libphonenumber-js";
 
 export const authFormSchema = z.object({
-  phone: z.string().min(1, { message: "Phone number is required" }),
-  twoFaCode: z.string().min(6, { message: "Verification code is required" }),
+  phone: z.string().refine(
+    (value) => {
+      return isPossibleNumber(value);
+    },
+    { message: "Invalid phone number" }
+  ),
+  twoFaCode: z.string().min(4, { message: "Invalid code" }),
 });

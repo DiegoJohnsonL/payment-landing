@@ -7,6 +7,5 @@ const { definePartsStyle, defineMultiStyleConfig } =
 
 
 export const tableTheme = defineMultiStyleConfig({
-  
  
 });

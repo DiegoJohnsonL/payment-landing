@@ -18,13 +18,18 @@ import {
 } from "@chakra-ui/react";
 import LoginLogo from "@/assets/login/login-logo.svg";
 import Logo from "@/components/logo";
-import { useForm } from "react-hook-form";
+import { Form, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authenticate } from "@/actions/auth";
 import { authFormSchema } from "@/types/schemas/auth-schema";
+import parsePhoneNumberFromString, {
+  CountryCode,
+  getCountries,
+  getCountryCallingCode,
+} from "libphonenumber-js";
 
 type AuthFormInputs = z.infer<typeof authFormSchema>;
 
@@ -52,13 +57,14 @@ const pinInputFieldStyles = {
 
 export default function Login() {
   const [currentStep, setCurrentStep] = useState(0);
+  const [country, setCountry] = useState("PE");
   const router = useRouter();
-
+  const countries = getCountries();
   const {
-    register,
     handleSubmit,
     setValue,
     trigger,
+    clearErrors,
     formState: { errors, isSubmitting },
   } = useForm<AuthFormInputs>({
     resolver: zodResolver(authFormSchema),
@@ -71,14 +77,20 @@ export default function Login() {
     }
   };
 
-  type FieldName = keyof AuthFormInputs;
-
   const onNext = async () => {
+    type FieldName = keyof AuthFormInputs;
     const fields = steps[currentStep].fields;
     const output = await trigger(fields as FieldName[]);
     if (!output) return;
-    return setCurrentStep(1);
+    if (currentStep === 0) {
+      setCurrentStep(1);
+    } else {
+      console.log("onSubmit");
+      handleSubmit(onSubmit)();
+    }
   };
+
+  console.log("errors", errors);
 
   const renderStep = () => {
     switch (currentStep) {
@@ -96,18 +108,34 @@ export default function Login() {
               <Stack pt={"32px"} w={"100%"}>
                 <HStack gap={"16px"}>
                   <Select
+                    isInvalid={false}
                     size={"lg"}
-                    defaultValue={"PE"}
                     fontSize={"14px"}
+                    value={country}
                     w={"30%"}
+                    onChange={(e) => {
+                      setCountry(e.target.value);
+                    }}
                   >
-                    <option value="PE">PE +51</option>
+                    {countries.map((country) => {
+                      return (
+                        <option key={country} value={country}>
+                          {country + " +" + getCountryCallingCode(country)}{" "}
+                        </option>
+                      );
+                    })}
                   </Select>
                   <Input
-                    {...register("phone")}
                     w={"70%"}
+                    type="number"
+                    onChange={(e) => {
+                      const phoneNumber = parsePhoneNumberFromString(
+                        e.target.value,
+                        country as CountryCode
+                      );
+                      setValue("phone", phoneNumber?.number as string);
+                    }}
                     size={"lg"}
-                    placeholder={"987 654 321"}
                     id="phone"
                   />
                 </HStack>
@@ -122,18 +150,25 @@ export default function Login() {
             <Text pt={"12px"} fontSize={"14px"} lineHeight={"16px"}>
               We will send you an SMS with a verification code.
             </Text>
-            <HStack pt={"24px"} gap={{ base: "12px", md: "16px" }}>
-              <PinInput
-                size={"lg"}
-                onChange={(value: string) => {
-                  setValue("twoFaCode", value);
-                }}
-              >
-                {[1, 2, 3, 4, 5, 6].map((index) => (
-                  <PinInputField key={index} {...pinInputFieldStyles} />
-                ))}
-              </PinInput>
-            </HStack>
+            <VStack>
+              <FormControl isInvalid={!!errors.twoFaCode}>
+                <HStack pt={"24px"} gap={{ base: "12px", md: "16px" }}>
+                  <PinInput
+                    size={"lg"}
+                    isInvalid={!!errors.twoFaCode}
+                    onChange={(value: string) => {
+                      setValue("twoFaCode", value);
+                    }}
+                  >
+                    {[1, 2, 3, 4].map((index) => (
+                      <PinInputField key={index} {...pinInputFieldStyles} />
+                    ))}
+                  </PinInput>
+                </HStack>
+                <FormErrorMessage>{`${errors.twoFaCode?.message}`}</FormErrorMessage>
+              </FormControl>
+            </VStack>
+
             <Text fontWeight={"300"} pt={"16px"} fontSize={"14px"}>
               Didn&rsquo;t get a code?{" "}
               <Text
@@ -167,10 +202,10 @@ export default function Login() {
               {renderStep()}
               <Button
                 size={"lg"}
-                type={currentStep === 0 ? "button" : "submit"}
+                type={"button"}
                 mt={"32px"}
                 fontSize={"14px"}
-                onClick={() => currentStep === 0 && onNext()}
+                onClick={onNext}
                 w={"204px"}
               >
                 {currentStep === 0 ? "Next" : "Verify"}

@@ -82,7 +82,7 @@ export async function isUserLoggedIn() {
 }
 
 export async function logout() {
-  cookies().delete("session");
+  cookies().delete("Authorization");
   redirect("/login");
 }
 

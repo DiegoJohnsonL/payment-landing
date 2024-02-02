@@ -15,6 +15,7 @@ import {
   Stack,
   Text,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
 import LoginLogo from "@/assets/login/login-logo.svg";
 import Logo from "@/components/logo";
@@ -23,7 +24,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { authenticate } from "@/actions/auth";
+import { authenticate, requestCode } from "@/actions/auth";
 import { authFormSchema } from "@/types/schemas/auth-schema";
 import parsePhoneNumberFromString, {
   CountryCode,
@@ -60,20 +61,35 @@ export default function Login() {
   const [country, setCountry] = useState("PE");
   const router = useRouter();
   const countries = getCountries();
+  const toast = useToast();
   const {
     handleSubmit,
     setValue,
     trigger,
     clearErrors,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<AuthFormInputs>({
     resolver: zodResolver(authFormSchema),
   });
 
   const onSubmit = async (data: AuthFormInputs) => {
-    const response = await authenticate(data);
-    if (response?.token) {
+    const res = await authenticate(data);
+    console.log("response", res);
+    if (res.status === 201) {
+      toast({
+        title: res.message,
+        status: "success",
+        isClosable: true,
+      });
       router.push("/dashboard");
+    } else {
+      res.message &&
+        toast({
+          title: res.message,
+          status: "error",
+          isClosable: true,
+        });
     }
   };
 
@@ -83,14 +99,30 @@ export default function Login() {
     const output = await trigger(fields as FieldName[]);
     if (!output) return;
     if (currentStep === 0) {
-      setCurrentStep(1);
+      return requestCode(watch("phone")).then(
+        (res) => {
+          console.log("res", res);
+          if (res.status === 200) {
+            toast({
+              title: res.message ?? "Code sent",
+              status: "success",
+              isClosable: true,
+            });
+            setCurrentStep(1);
+          } else {
+            res.message &&
+              toast({
+                title: res.message,
+                status: "error",
+                isClosable: true,
+              });
+          }
+        }
+      );
     } else {
-      console.log("onSubmit");
       handleSubmit(onSubmit)();
     }
   };
-
-  console.log("errors", errors);
 
   const renderStep = () => {
     switch (currentStep) {
@@ -157,6 +189,7 @@ export default function Login() {
                     size={"lg"}
                     isInvalid={!!errors.twoFaCode}
                     onChange={(value: string) => {
+                      clearErrors("twoFaCode");
                       setValue("twoFaCode", value);
                     }}
                   >

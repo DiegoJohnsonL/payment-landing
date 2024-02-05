@@ -254,11 +254,10 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
             <VStack
               gap={"24px"}
               w={"100%"}
-              minH={"800px"}
               display={isPayment ? "flex" : "none"}
               className="payment-form"
             >
-              <Box id="your-iframe-payment" h={"100%"}></Box>
+              <Box id="your-iframe-payment" minH={"950px"}></Box>
             </VStack>
             <Spacer />
              {!isPayment && (

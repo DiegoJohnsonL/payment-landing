@@ -143,7 +143,7 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
       } else {
         toast({
           title: "Error",
-          description: "There was an error processing your payment",
+          description: "There was an error starting your payment, please try again",
           status: "error",
           duration: 9000,
           isClosable: true,

@@ -20,6 +20,7 @@ import {
   VStack,
   useRadioGroup,
   useSteps,
+  useToast,
 } from "@chakra-ui/react";
 import Image from "next/image";
 import CheckoutGif from "@/assets/checkout/checkout-side.gif";
@@ -34,92 +35,121 @@ import getIzipayToken from "@/actions/checkout";
 import { usePaymentOptions } from "@/hooks/utils/use-get-payment-options";
 import { jwtDecode } from "jwt-decode";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const CheckoutFormSchema = z.object({
-  name: z.string(),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
   email: z.string().email(),
-  phone: z.string(),
-  address: z.string(),
-  city: z.string(),
-  country: z.string(),
-  zip: z.string(),
-  cardNumber: z.string(),
-  cardHolder: z.string(),
-  expirationDate: z.string(),
-  cvv: z.string(),
+  document: z.string().min(1, "Document type is required"),
+  documentNumber: z.string().min(1, "Document number is required"),
+  termsAndConditions: z.literal<boolean>(true, { errorMap: () => ({ message: "You must accept the terms and conditions", }), }),
+  // receiveNews: z.boolean().optional(),
+  // paymentOption: z.string().min(1, "Payment option is required"),
 });
 
 type CheckoutFormInputs = z.infer<typeof CheckoutFormSchema>;
 
-const steps = [{ index: 0 }, { index: 1 }, { index: 2 }];
+const steps = [
+  {
+    index: 0,
+    fields: [
+      "firstName",
+      "lastName",
+      "email",
+      "document",
+      "documentNumber",
+      "termsAndConditions",
+      "receiveNews",
+    ],
+  },
+  { index: 1, fields: ["paymentOption"] },
+  { index: 2 },
+];
 
 export default function CheckoutPage({ params }: { params: { id: string } }) {
   const paymentOptions = usePaymentOptions();
+  const toast = useToast();
   const { getRadioProps, value } = useRadioGroup({
     name: "paymentOptions",
     defaultValue: paymentOptions[0].id.toString(),
     onChange: (value) => console.log(value),
   });
+  const {
+    trigger,
+    register,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<CheckoutFormInputs>({
+    resolver: zodResolver(CheckoutFormSchema),
+  });
   const [isPayment, setIsPayment] = useState(false);
-
   const { activeStep, goToNext, goToPrevious } = useSteps({
     index: 0,
     count: steps.length,
   });
-
   const router = useRouter();
   const { data: product, isLoading } = useGetProduct(params.id);
 
   const onNext = async () => {
+    type FieldName = keyof CheckoutFormInputs;
+    const fields = steps[activeStep].fields;
+    const output = await trigger(fields as FieldName[]);
+    if (!output) return;
+    if (activeStep === 0) return goToNext();
     if (activeStep === steps.length - 1) return router.push("/dashboard");
     if (activeStep === 1) {
       const res = await getIzipayToken(product!.price);
       if (res.response.token) {
         const token = res.response.token;
-        console.log("token", token);
         const decoded = jwtDecode(token) as any;
-
         const iziConfig = {
           config: {
-            transactionId: decoded.transactionId, //From API
+            transactionId: decoded.transactionId, 
             action: "pay",
-            merchantCode: decoded.merchantCode, // FROM API
+            merchantCode: decoded.merchantCode,
             order: {
-              orderNumber: decoded.OrderNumber, // FROM API
-              currency: "PEN", // FROM API
-              amount: decoded.Amount, // FROM API
+              orderNumber: decoded.OrderNumber,
+              currency: "PEN", 
+              amount: decoded.Amount,
               processType: "AT",
               merchantBuyerId: "mc17621", // Either phone number, email or id. How should we handle when users are not logged in?
               dateTimeTransaction: currentTimeUnix,
             },
             //This billing information is necessary but we don't ask the user for it. Should we hardcode it with some peruvian street address?
             billing: {
-              firstName: "Juan",
-              lastName: "Wick Quispe",
-              email: "jwickq@izi.com",
+              firstName: watch("firstName"),
+              lastName: watch("lastName"),
+              email: watch("email"),
               phoneNumber: "958745896",
               street: "Av. Jorge Chávez 275",
               city: "Lima",
               state: "Lima",
               country: "PE",
               postalCode: "15038",
-              documentType: "DNI",
-              document: "21458796",
+              documentType: watch("document"),
+              document: watch("documentNumber"),
             },
             render: {
               typeForm: "embedded",
               container: "#your-iframe-payment",
               showButtonProcessForm: true,
             },
-            // urlRedirect:
-            //   "https://server.punto-web.com/comercio/creceivedemo.asp?p=h1",
+
           },
         };
-
         handleLoadForm(iziConfig.config, token);
+      } else {
+        toast({
+          title: "Error",
+          description: "There was an error processing your payment",
+          status: "error",
+          duration: 9000,
+          isClosable: true,
+        });
       }
-    } else {
-      goToNext();
+      
     }
   };
 
@@ -161,7 +191,13 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
     if (isPayment) return <></>;
     switch (activeStep) {
       case 0:
-        return <PersonalInfoStep product={product} />;
+        return (
+          <PersonalInfoStep
+            product={product}
+            register={register}
+            errors={errors}
+          />
+        );
       case 1:
         return (
           <PaymentOptionsStep
@@ -218,14 +254,14 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
             <VStack
               gap={"24px"}
               w={"100%"}
-              h={"fit-content"}
+              minH={"800px"}
               display={isPayment ? "flex" : "none"}
               className="payment-form"
             >
-              <Box id="your-iframe-payment"></Box>
+              <Box id="your-iframe-payment" h={"100%"}></Box>
             </VStack>
             <Spacer />
-            {!isPayment && (
+             {!isPayment && (
               <Flex gap={"24px"} w={"100%"}>
                 {activeStep > 0 && (
                   <Button
@@ -249,7 +285,7 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
                   {activeStep === steps.length - 1 ? "Finish" : "Next"}
                 </Button>
               </Flex>
-            )}
+            )} 
           </Stack>
         </Stack>
 

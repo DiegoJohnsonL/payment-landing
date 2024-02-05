@@ -1,7 +1,31 @@
 import IProduct from "@/types/product";
-import { Card, CardBody, Checkbox, Divider, HStack, Heading, Input, Select, Stack, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Card,
+  CardBody,
+  Checkbox,
+  Divider,
+  FormControl,
+  FormErrorMessage,
+  HStack,
+  Heading,
+  Input,
+  Select,
+  Stack,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 
-export default function PersonalInfoStep({ product }: { product: IProduct }) {
+export default function PersonalInfoStep({
+  product,
+  register,
+  errors,
+}: {
+  product: IProduct;
+  register: any;
+  errors: any;
+}) {
+
   return (
     <>
       <VStack gap={"24px"} align={"flex-start"} w={"100%"}>
@@ -33,40 +57,91 @@ export default function PersonalInfoStep({ product }: { product: IProduct }) {
         <Card w={"100%"}>
           <CardBody display={"flex"} flexDirection={"column"} gap={"16px"}>
             <Stack spacing={"28px"}>
-              <VStack align={"flex-start"} w={"100%"} gap={"12px"}>
-                <Text fontWeight={"500"}>Full Name</Text>
-                <Input placeholder="Enter your full name" />
-              </VStack>
+              <HStack gap={"16px"} align={"flex-start"}>
+                <VStack align={"flex-start"} w={"100%"} gap={"12px"}>
+                  <Text fontWeight={"500"}>First Name</Text>
+                  <FormControl w={"100%"} isInvalid={!!errors.firstName}>
+                    <Input
+                      {...register("firstName")}
+                      placeholder="Enter your first name"
+                    />
+                    <FormErrorMessage>
+                      {errors.firstName?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+                </VStack>
+                <VStack align={"flex-start"} w={"100%"} gap={"12px"}>
+                  <Text fontWeight={"500"}>Last Name</Text>
+                  <FormControl w={"100%"} isInvalid={!!errors.lastName}>
+                    <Input
+                      placeholder="Enter your last name"
+                      {...register("lastName")}
+                    />
+                    <FormErrorMessage>
+                      {errors.lastName?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+                </VStack>
+              </HStack>
               <VStack align={"flex-start"} w={"100%"} gap={"12px"}>
                 <Text fontWeight={"500"}>Identify Document</Text>
-                <HStack w={"100%"} gap={"16px"}>
-                  <Select w={"35%"}>
-                    <option value="DNI">DNI</option>
-                  </Select>
-                  <Input w={"75%"} placeholder="Document Number" />
+                <HStack w={"100%"} gap={"16px"} align={"flex-start"}>
+                  <FormControl w={"35%"} isInvalid={!!errors.document}>
+                    <Select {...register("document")}>
+                      <option value="DNI">DNI</option>
+                    </Select>
+                    <FormErrorMessage>
+                      {errors.document?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+                  <FormControl w={"75%"} isInvalid={!!errors.documentNumber}>
+                    <Input
+                      placeholder="Document Number"
+                      {...register("documentNumber")}
+                    />
+                    <FormErrorMessage>
+                      {errors.documentNumber?.message}
+                    </FormErrorMessage>
+                  </FormControl>
                 </HStack>
               </VStack>
               <VStack align={"flex-start"} w={"100%"} gap={"12px"}>
                 <Text fontWeight={"500"}>Email Address</Text>
-                <Input placeholder="Enter your email address" />
+                <FormControl w={"100%"} isInvalid={!!errors.email}>
+                  <Input
+                    placeholder="Enter your email address"
+                    {...register("email")}
+                  />
+                  <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+                </FormControl>
               </VStack>
             </Stack>
             <Stack gap={"12px"}>
-              <Checkbox>
-                Accept{" "}
-                <Text
-                  fontWeight={"500"}
-                  as="span"
-                  fontSize={"14px"}
-                  color={"primary.500"}
-                >
-                  Terms and Conditions
-                </Text>
-              </Checkbox>
-              <Checkbox>
-                I would like to receive special offers and news about our
-                products.
-              </Checkbox>
+              <FormControl w={"100%"} isInvalid={!!errors.termsAndConditions}>
+                <Checkbox {...register("termsAndConditions")}>
+                  Accept{" "}
+                  <Text
+                    fontWeight={"500"}
+                    as="span"
+                    fontSize={"14px"}
+                    color={"primary.500"}
+                  >
+                    Terms and Conditions
+                  </Text>
+                </Checkbox>
+                <FormErrorMessage>
+                  {errors.termsAndConditions?.message}
+                </FormErrorMessage>
+              </FormControl>
+              <FormControl w={"100%"} isInvalid={!!errors.receiveNews}>
+                <Checkbox {...register("receiveNews")}>
+                  I would like to receive special offers and news about our
+                  products.
+                </Checkbox>
+                <FormErrorMessage>
+                  {errors.receiveNews?.message}
+                </FormErrorMessage>
+              </FormControl>
             </Stack>
           </CardBody>
         </Card>

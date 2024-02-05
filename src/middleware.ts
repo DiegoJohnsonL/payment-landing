@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const currentUser = request.cookies.get("Authorization")?.value;
   const currentPath = request.nextUrl.pathname;
-  const unprotectedPaths = ["/", "/login"];
+  const unprotectedPaths = ["/", "/login", "checkout/*"];
 
   if (currentUser) {
     if (currentPath === "/login") {

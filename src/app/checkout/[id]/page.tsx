@@ -158,9 +158,10 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
   };
 
   const currentTimeUnix = Math.floor(Date.now()) * 1000;
-
-  const callbackResponsePayment = (response: any) => {
+  const [paymentResponse, setPaymentResponse] = useState<IzipayResponse>()
+  const callbackResponsePayment = (response: IzipayResponse) => {
     console.log(response);
+    setPaymentResponse(response);
     setIsPayment(false);
     goToNext();
   };
@@ -208,7 +209,7 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
         );
       case 2:
       default:
-        return <CheckoutCompleteStep />;
+        return <CheckoutCompleteStep paymentResponse={paymentResponse!}/>;
     }
   }
 
@@ -262,7 +263,7 @@ export default function CheckoutPage({ params }: { params: { id: string } }) {
             <Spacer />
              {!isPayment && (
               <Flex gap={"24px"} w={"100%"}>
-                {activeStep > 0 && (
+                {activeStep > 0 && !(paymentResponse?.code === "00" && activeStep === steps.length -1) && (
                   <Button
                     h={"48px"}
                     w={"100%"}

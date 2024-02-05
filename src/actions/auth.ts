@@ -60,7 +60,7 @@ export async function authenticate(formData: AuthFormInputs) {
 
       cookies().set("Authorization", jwt, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
+        secure: true,
         maxAge: 60 * 60 * 24 * 7, // One week
         path: "/",
       });

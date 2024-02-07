@@ -21,19 +21,24 @@ export async function requestCode(phoneNumber: string) {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
     },
-    body: `phoneNumber=${encodeURIComponent(phoneNumber)}`,
+    body: `phoneNumber=${encodeURIComponent(phoneNumber.replace("+", ""))}`,
     cache: "no-store",
   });
+
   return res
     .json()
-    .then((json) => ({
-      status: res.status,
-      message: json.message as string,
-    }))
-    .catch((_) => ({
-      status: res.status,
-      message: undefined,
-    }));
+    .then((json) => {
+      return {
+        status: res.status,
+        message: json.message as string,
+      };
+    })
+    .catch((_) => {
+      return {
+        status: res.status,
+        message: undefined,
+      };
+    });
 }
 
 export async function authenticate(formData: AuthFormInputs) {
@@ -68,17 +73,15 @@ export async function authenticate(formData: AuthFormInputs) {
       return { status: res.status, message: "Success" };
     } else {
       const json = await res.json();
-      return { status: res.status, message: json.message as string || "Unknown error" };
+      return {
+        status: res.status,
+        message: (json.message as string) || "Unknown error",
+      };
     }
   } catch (error) {
     console.error("Error during authentication:", error);
     return { status: 500, message: "Internal Server Error" };
   }
-}
-
-
-export async function isUserLoggedIn() {
-  return true;
 }
 
 export async function logout() {
@@ -89,7 +92,7 @@ export async function logout() {
 export async function getUserSession() {
   const userSession = cookies().get("Authorization")?.value;
   if (!userSession) {
-    return null;
+    return undefined;
   }
   return tempUser;
 }

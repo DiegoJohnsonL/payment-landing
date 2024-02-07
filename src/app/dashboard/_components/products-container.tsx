@@ -1,3 +1,5 @@
+"use client";
+
 import {
   VStack,
   HStack,
@@ -31,7 +33,7 @@ import TablePagination from "@/components/table-pagination";
 import { CopyIcon, Search2Icon } from "@chakra-ui/icons";
 import { Link } from "@chakra-ui/next-js";
 import { domainsConfig } from "@/config";
-import { useState } from "react";
+import {  useState } from "react";
 import useGetProducts from "@/hooks/api/product/use-get-products";
 import CreateUpdateProductDrawer from "./create-update-product-drawer";
 import DeleteProductModal from "./delete-product-modal";
@@ -49,6 +51,7 @@ export default function ProductContainer() {
     });
   const products = data ? data.pages.flatMap((page) => page.data) : [];
   const [selectedProduct, setSelectedProduct] = useState<IProduct>();
+
   return (
     <>
       <CreateUpdateProductDrawer
@@ -167,7 +170,7 @@ export default function ProductContainer() {
                   </Td>
                   <Td color={"#4D4D4D"} fontSize={"12px"}>
                     <HStack>
-                      <Link href={`/checkout/${product.id}`} target="_blank">
+                      <Link href={`/checkout/${product.id}`} >
                         {`${domainsConfig.urlPayment.replace(
                           "https://",
                           ""

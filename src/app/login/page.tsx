@@ -93,32 +93,34 @@ export default function Login() {
     }
   };
 
+  const handleRequestCode = async () => {
+    return requestCode(watch("phone")).then((res) => {
+      console.log("res", res);
+      if (res.status === 200) {
+        toast({
+          title: res.message,
+          status: "success",
+          isClosable: true,
+        });
+        setCurrentStep(1);
+      } else {
+        res.message &&
+          toast({
+            title: res.message,
+            status: "error",
+            isClosable: true,
+          });
+      }
+    });
+  }
+
   const onNext = async () => {
     type FieldName = keyof AuthFormInputs;
     const fields = steps[currentStep].fields;
     const output = await trigger(fields as FieldName[]);
     if (!output) return;
     if (currentStep === 0) {
-      return requestCode(watch("phone")).then(
-        (res) => {
-          console.log("res", res);
-          if (res.status === 200) {
-            toast({
-              title: res.message ?? "Code sent",
-              status: "success",
-              isClosable: true,
-            });
-            setCurrentStep(1);
-          } else {
-            res.message &&
-              toast({
-                title: res.message,
-                status: "error",
-                isClosable: true,
-              });
-          }
-        }
-      );
+      handleRequestCode();
     } else {
       handleSubmit(onSubmit)();
     }
@@ -209,6 +211,9 @@ export default function Login() {
                 cursor={"pointer"}
                 textColor={"primary.500"}
                 fontWeight={"400"}
+                onClick={() => {
+                  handleRequestCode();
+                }}
               >
                 Click to Resend.
               </Text>
@@ -224,7 +229,7 @@ export default function Login() {
         <CardBody px={{ base: "20px", sm: "40px" }} py={"32px"}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <VStack w={"100%"} gap="0" textAlign={"center"}>
-              <Logo width={120} height={32} colorMode="light" />
+              <Logo width={120} colorMode="light" />
               <Heading
                 fontSize={{ base: "32px" }}
                 lineHeight={"40px"}

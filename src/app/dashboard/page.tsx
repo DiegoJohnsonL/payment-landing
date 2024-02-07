@@ -1,7 +1,6 @@
 "use client";
 
-import { Flex, Show, VStack } from "@chakra-ui/react";
-
+import { Flex, VStack, useToast } from "@chakra-ui/react";
 import { ISidenavItem } from "@/types/sidenav-item";
 import SidenavItem from "./_components/sidenav-item";
 import { useDashboardMenuItems } from "@/hooks/utils/use-menu-items";
@@ -10,11 +9,16 @@ import ProductContainer from "./_components/products-container";
 import LastTransactionsContainer from "./_components/last-transactions-container";
 import WithdrawalContainer from "./_components/withdrawal-container";
 import SettingsContainer from "./_components/settings-container";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Dashboard() {
   const dashboardMenuItems: ISidenavItem[] = useDashboardMenuItems();
   const { selectedItemId } = useNavbar();
-  
+
+
+
+
   const renderSection = () => {
     switch (selectedItemId) {
       case "products":
@@ -33,6 +37,7 @@ export default function Dashboard() {
         return <></>;
     }
   };
+
   return (
     <Flex
       py={"40px"}
@@ -43,17 +48,18 @@ export default function Dashboard() {
       px={"20px"}
       gap={"24px"}
     >
-      <Show above="md">
-        <VStack maxW={"286px"} w={"100%"} shadow={"md"} gap={0} minW={"205px"}>
-          {dashboardMenuItems.map((item) => (
-            <SidenavItem
-              key={item.id}
-              item={item}
-              selectedId={selectedItemId}
-            />
-          ))}
-        </VStack>
-      </Show>
+      <VStack
+        maxW={"286px"}
+        w={"100%"}
+        shadow={"md"}
+        gap={0}
+        minW={"205px"}
+        display={{ base: "none", md: "flex" }}
+      >
+        {dashboardMenuItems.map((item) => (
+          <SidenavItem key={item.id} item={item} selectedId={selectedItemId} />
+        ))}
+      </VStack>
       <VStack
         shadow={{ base: "none", md: "md" }}
         maxW={"912px"}

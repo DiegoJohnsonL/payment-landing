@@ -6,7 +6,7 @@ export default function CheckoutCompleteStep({paymentResponse} : {paymentRespons
   return (
     <>
       <VStack h={"100%"} justify={"center"} gap={"0"}>
-        <Logo width={125} height={32} colorMode="light" />
+        <Logo width={125} colorMode="light" />
         <Image
           src={FinishCheckoutImg.src}
           alt=""

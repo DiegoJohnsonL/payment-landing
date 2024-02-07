@@ -1,7 +1,6 @@
-import { Center, Image, Progress, Spinner, Text, VStack } from "@chakra-ui/react";
+import { Center, Spinner, VStack } from "@chakra-ui/react";
 
 export default function Loading() {
- 
   return (
     <VStack
       h={"100vh"}
@@ -11,7 +10,7 @@ export default function Loading() {
       w={"100%"}
     >
       <Center height={"100%"} w={"100%"}>
-        <Spinner/>
+        <Spinner />
       </Center>
     </VStack>
   );
